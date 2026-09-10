@@ -14,23 +14,41 @@
     "status": "published",
     "settings": {
       "heading": "AnisShopify",
+      "nav_links": [
+        {
+          "href": "#home",
+          "label": "Home"
+        },
+        {
+          "href": "#work",
+          "label": "Work"
+        },
+        {
+          "href": "#services",
+          "label": "Services"
+        },
+        {
+          "href": "#about",
+          "label": "About"
+        },
+        {
+          "href": "#faq",
+          "label": "FAQ"
+        },
+        {
+          "href": "#contact",
+          "label": "Contact"
+        }
+      ],
       "sticky_nav": true,
       "primary_cta_url": "#contact",
       "primary_cta_label": "Let's Talk",
       "show_theme_toggle": true,
-      "transparent_over_hero": true,
-      "nav_links": [
-        { "label": "Home", "href": "#home" },
-        { "label": "Work", "href": "#work" },
-        { "label": "Services", "href": "#services" },
-        { "label": "About", "href": "#about" },
-        { "label": "FAQ", "href": "#faq" },
-        { "label": "Contact", "href": "#contact" }
-      ]
+      "transparent_over_hero": true
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.232672+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "e81dffd3-5314-492e-9572-6aa696657b1c",
@@ -47,14 +65,14 @@
     "status": "published",
     "settings": {
       "layout": "two-column",
-      "eyebrow": "Shopify Store & Landing Page Developer",
+      "eyebrow": "Shopify Developer & Landing Page Specialist",
       "heading": "Shopify Website Design That",
       "alignment": "left",
       "animation": "fade-up",
       "image_alt": "Ansarul Anis - Shopify Developer",
       "image_url": "/images/ansarul-anis.png",
       "background": "default",
-      "subheading": "Hey, I’m Ansarul Anis — a Shopify Expert with 5+ years of experience building high-converting ecommerce websites. I specialize in Shopify website design, custom Shopify store development, dropshipping stores, high-performance themes, landing pages, and Shopify store redesigns—creating fast, polished experiences designed to turn traffic into revenue.",
+      "subheading": "Hey, I'm Ansarul Anis. A passionate young Shopify developer engineering custom high-converting stores, direct-response landing pages, and lightning-fast themes built to turn traffic into revenue.",
       "spacing_top": "normal",
       "heading_prefix": "Shopify Website Design That",
       "image_position": "right",
@@ -66,31 +84,27 @@
       ],
       "spacing_bottom": "normal",
       "animation_speed": "normal",
+      "badge_top_title": "Top Rated",
       "primary_cta_url": "#work",
-      "primary_cta_label": "View My Work",
-      "secondary_cta_url": "#contact",
-      "secondary_cta_label": "Contact Me",
       "hero_trust_chips": [
         "Shopify 2.0",
         "Liquid",
-        "HTML5/CSS3",
-        "JavaScript",
-        "Figma/UI/UX",
         "APIs/GraphQL",
-        "React/Next.js",
         "Performance and SEO",
         "Apps & Integrations",
         "CRO and Analytics",
         "AI Integration"
       ],
-      "badge_top_title": "Top Rated",
-      "badge_top_subtitle": "Shopify Developer",
+      "primary_cta_label": "View My Work",
+      "secondary_cta_url": "#contact",
       "badge_bottom_title": "270+ Stores",
+      "badge_top_subtitle": "Shopify Developer",
+      "secondary_cta_label": "Contact Me",
       "badge_bottom_subtitle": "Developed Successfully"
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.443744+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "059b2a34-99e7-4ac0-929d-fbc5abb37213",
@@ -111,7 +125,7 @@
           "id": "ts-1",
           "type": "stat",
           "stat_label": "Years Freelancing",
-          "stat_value": "5+"
+          "stat_value": "4+"
         },
         {
           "id": "ts-2",
@@ -140,7 +154,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.658133+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "7da111de-9d2f-4066-a0d2-edf285eb01d2",
@@ -163,13 +177,13 @@
       "animation": "fade-up",
       "background": "default",
       "subheading": "Real results from custom Shopify website design, Shopify store redesign, and high-converting ecommerce website builds.",
-      "show_filters": true,
       "spacing_top": "spacious",
+      "show_filters": true,
       "spacing_bottom": "spacious"
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.87758+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "eec0fd20-49da-4a59-a6a2-63b197770a81",
@@ -197,7 +211,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.059479+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "5e94db79-8a37-420d-9175-584ee8aba24b",
@@ -226,7 +240,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.274204+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "2c7bf578-27d5-450f-9585-f15457f55b7a",
@@ -242,14 +256,6 @@
     "mobile_visible": true,
     "status": "published",
     "settings": {
-      "layout": "two-column",
-      "eyebrow": "Meet the Shopify Expert",
-      "heading": "I Build Shopify Stores That Sell",
-      "animation": "fade-up",
-      "image_url": "/images/shopify-dashboard.png",
-      "background": "muted",
-      "description": "I'm Ansarul Anis — a Shopify expert who helps ambitious brands build Shopify websites that convert. From Shopify store design to dropshipping store builds and full ecommerce website development, I engineer every pixel for revenue.",
-      "availability_line": "Currently booking for this month",
       "tools": [
         "Shopify 2.0",
         "Liquid",
@@ -260,17 +266,25 @@
         "Klaviyo",
         "Recharge"
       ],
-      "badge_top_title": "Top Rated",
-      "badge_top_subtitle": "Shopify Developer",
-      "badge_bottom_title": "270+ Stores",
-      "badge_bottom_subtitle": "Developed Successfully",
+      "layout": "two-column",
+      "eyebrow": "Meet the Shopify Expert",
+      "heading": "I Build Shopify Stores That Sell",
+      "animation": "fade-up",
+      "image_url": "/images/shopify-dashboard.png",
+      "background": "muted",
+      "description": "I'm Ansarul Anis — a Shopify expert who helps ambitious brands build Shopify websites that convert. From Shopify store design to dropshipping store builds and full ecommerce website development, I engineer every pixel for revenue.",
       "spacing_top": "spacious",
       "image_position": "left",
-      "spacing_bottom": "spacious"
+      "spacing_bottom": "spacious",
+      "badge_top_title": "Top Rated",
+      "availability_line": "Currently booking for this month",
+      "badge_bottom_title": "270+ Stores",
+      "badge_top_subtitle": "Shopify Developer",
+      "badge_bottom_subtitle": "Developed Successfully"
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.463688+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "4044cc3e-1fe4-42d5-ba38-20af0f4abe16",
@@ -297,7 +311,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.684856+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "8c9bf5f1-42af-46b9-86f1-8113210fa508",
@@ -325,7 +339,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.899258+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   },
   {
     "id": "eee5cac9-d94d-48a5-b8fc-b02d31cc864c",
@@ -344,11 +358,11 @@
       "heading": "AnisShopify",
       "background": "default",
       "description": "Ansarul Anis — Shopify expert specializing in Shopify store design, Shopify website development, ecommerce website builds, and dropshipping store setups.",
-      "show_social_icons": true,
-      "copyright_text": ""
+      "copyright_text": "",
+      "show_social_icons": true
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:03.131833+00:00",
-    "updated_at": "2026-09-10T12:59:13.277Z"
+    "updated_at": "2026-09-10T17:01:34.366Z"
   }
 ]
