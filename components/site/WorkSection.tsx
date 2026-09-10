@@ -78,10 +78,25 @@ export function WorkSection({ projects = [], sectionSettings }: WorkSectionProps
     }
   };
 
+  const sectionRef = React.useRef<HTMLElement>(null);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage === currentPage) return;
+    setCurrentPage(newPage);
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      const el = document.getElementById('work');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
   const showFilters = sectionSettings?.show_filters !== false;
 
   return (
-    <section id="work" className="py-24 sm:py-32 relative scroll-mt-16">
+    <section id="work" ref={sectionRef} className="py-24 sm:py-32 relative scroll-mt-20 sm:scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-10 sm:mb-12">
@@ -214,7 +229,7 @@ export function WorkSection({ projects = [], sectionSettings }: WorkSectionProps
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-14">
             <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
               className="inline-flex items-center gap-1 px-4 py-2 rounded-xl border border-border bg-card text-xs sm:text-sm font-bold text-foreground disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted transition-colors shadow-xs"
             >
@@ -226,7 +241,7 @@ export function WorkSection({ projects = [], sectionSettings }: WorkSectionProps
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                 <button
                   key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
+                  onClick={() => handlePageChange(pageNum)}
                   className={`w-9 h-9 rounded-xl text-xs sm:text-sm font-extrabold transition-all ${
                     currentPage === pageNum
                       ? 'bg-primary text-primary-foreground shadow-md scale-105'
@@ -239,7 +254,7 @@ export function WorkSection({ projects = [], sectionSettings }: WorkSectionProps
             </div>
 
             <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
               className="inline-flex items-center gap-1 px-4 py-2 rounded-xl border border-border bg-card text-xs sm:text-sm font-bold text-foreground disabled:opacity-40 disabled:cursor-not-allowed hover:bg-muted transition-colors shadow-xs"
             >
