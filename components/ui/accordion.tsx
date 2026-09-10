@@ -51,14 +51,22 @@ export function AccordionItem({ title, children, isOpen, onToggle, className }: 
 export function Accordion({
   items,
   className,
+  allowMultiple = false,
 }: {
   items: { id: string; question: string; answer: string }[];
   className?: string;
+  allowMultiple?: boolean;
 }) {
-  const [openId, setOpenId] = React.useState<string | null>(items[0]?.id || null);
+  const [openIds, setOpenIds] = React.useState<string[]>(items[0]?.id ? [items[0].id] : []);
 
   const toggle = (id: string) => {
-    setOpenId((prev) => (prev === id ? null : id));
+    if (allowMultiple) {
+      setOpenIds((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      );
+    } else {
+      setOpenIds((prev) => (prev.includes(id) ? [] : [id]));
+    }
   };
 
   return (
@@ -67,7 +75,7 @@ export function Accordion({
         <AccordionItem
           key={item.id}
           title={item.question}
-          isOpen={openId === item.id}
+          isOpen={openIds.includes(item.id)}
           onToggle={() => toggle(item.id)}
         >
           {item.answer}

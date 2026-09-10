@@ -64,6 +64,14 @@ export interface SectionSettings {
   whatsapp_number?: string;
   availability_line?: string;
   tools?: string[];
+  badge_top_title?: string;
+  badge_top_subtitle?: string;
+  badge_bottom_title?: string;
+  badge_bottom_subtitle?: string;
+  copyright_text?: string;
+  nav_links?: Array<{ label: string; href: string }>;
+  show_filters?: boolean;
+  quote_icon?: string;
   
   // Layout
   layout?:

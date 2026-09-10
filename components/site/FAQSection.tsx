@@ -41,7 +41,7 @@ export function FAQSection({ faqs = [], sectionSettings }: FAQSectionProps) {
         <div className="bg-card p-6 sm:p-10 rounded-[14px] border border-border/80 shadow-sm relative overflow-hidden">
           {/* Gradient accent line at top */}
           <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary/80 via-primary to-primary/80 rounded-t-[14px]" />
-          <Accordion items={faqs} />
+          <Accordion items={faqs} allowMultiple={sectionSettings?.accordion_allow_multiple} />
         </div>
       </div>
     </section>

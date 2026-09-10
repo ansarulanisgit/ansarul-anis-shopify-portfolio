@@ -75,8 +75,12 @@ export function AboutSection({ settings = {}, sectionSettings }: AboutSectionPro
                 🏆
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-[11px] font-extrabold text-foreground leading-none">Top Rated</span>
-                <span className="text-[9px] text-muted-foreground font-semibold mt-0.5">Shopify Developer</span>
+                <span className="text-[11px] font-extrabold text-foreground leading-none">
+                  {sectionSettings?.badge_top_title || 'Top Rated'}
+                </span>
+                <span className="text-[9px] text-muted-foreground font-semibold mt-0.5">
+                  {sectionSettings?.badge_top_subtitle || 'Shopify Developer'}
+                </span>
               </div>
             </motion.div>
 
@@ -92,8 +96,12 @@ export function AboutSection({ settings = {}, sectionSettings }: AboutSectionPro
                 ⚡
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-sm font-black text-foreground leading-none">270+ Stores</span>
-                <span className="text-[10px] text-emerald-500 font-bold mt-0.5">Developed Successfully</span>
+                <span className="text-sm font-black text-foreground leading-none">
+                  {sectionSettings?.badge_bottom_title || '270+ Stores'}
+                </span>
+                <span className="text-[10px] text-emerald-500 font-bold mt-0.5">
+                  {sectionSettings?.badge_bottom_subtitle || 'Developed Successfully'}
+                </span>
               </div>
             </motion.div>
 
@@ -116,8 +124,8 @@ export function AboutSection({ settings = {}, sectionSettings }: AboutSectionPro
               {/* Shopify Dashboard Image Display - 100% full view uncropped */}
               <div className="relative w-full aspect-[764/503] bg-[#F8F9FA] p-1 sm:p-1.5">
                 <Image
-                  src="/images/shopify-dashboard.png"
-                  alt="Shopify Store Dashboard & Analytics"
+                  src={sectionSettings?.image_url || '/images/shopify-dashboard.png'}
+                  alt={sectionSettings?.image_alt || 'Shopify Store Dashboard & Analytics'}
                   fill
                   sizes="(max-width: 768px) 100vw, 600px"
                   priority

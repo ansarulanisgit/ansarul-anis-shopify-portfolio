@@ -78,6 +78,8 @@ export function WorkSection({ projects = [], sectionSettings }: WorkSectionProps
     }
   };
 
+  const showFilters = sectionSettings?.show_filters !== false;
+
   return (
     <section id="work" className="py-24 sm:py-32 relative scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,24 +98,26 @@ export function WorkSection({ projects = [], sectionSettings }: WorkSectionProps
         </div>
 
         {/* Category Filters Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
-          {FILTER_CATEGORIES.map((category) => {
-            const isActive = activeCategory === category;
-            return (
-              <button
-                key={category}
-                onClick={() => handleCategorySelect(category)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 border ${
-                  isActive
-                    ? 'bg-primary text-primary-foreground border-primary shadow-md scale-105'
-                    : 'bg-card border-border/80 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-muted/50'
-                }`}
-              >
-                {category}
-              </button>
-            );
-          })}
-        </div>
+        {showFilters && (
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+            {FILTER_CATEGORIES.map((category) => {
+              const isActive = activeCategory === category;
+              return (
+                <button
+                  key={category}
+                  onClick={() => handleCategorySelect(category)}
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 border ${
+                    isActive
+                      ? 'bg-primary text-primary-foreground border-primary shadow-md scale-105'
+                      : 'bg-card border-border/80 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-muted/50'
+                  }`}
+                >
+                  {category}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Project Cards Grid (Paginated to 9 per page) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

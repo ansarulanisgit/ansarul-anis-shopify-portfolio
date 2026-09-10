@@ -24,6 +24,7 @@ export function TestimonialsSection({ testimonials = [], sectionSettings }: Test
 
   const autoplaySpeed = sectionSettings?.carousel_speed || 6000;
   const autoplayEnabled = sectionSettings?.carousel_autoplay !== false;
+  const pauseOnHover = sectionSettings?.pause_on_hover !== false;
 
   // Group testimonials into pairs of 2 for desktop/tablet
   const slidePairs = React.useMemo(() => {
@@ -83,10 +84,10 @@ export function TestimonialsSection({ testimonials = [], sectionSettings }: Test
         {/* Carousel Container */}
         <div
           className="relative max-w-6xl mx-auto"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
+          onMouseEnter={() => { if (pauseOnHover) setIsPaused(true); }}
+          onMouseLeave={() => { if (pauseOnHover) setIsPaused(false); }}
+          onTouchStart={() => { if (pauseOnHover) setIsPaused(true); }}
+          onTouchEnd={() => { if (pauseOnHover) setIsPaused(false); }}
         >
           {/* Animated 2-Column Grid Slide */}
           <div className="min-h-[360px] relative">

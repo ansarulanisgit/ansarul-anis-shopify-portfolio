@@ -2,8 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/lib/supabase/server';
 import { initialDefaultSections } from '@/lib/sections/defaults';
 import { PageSection } from '@/types/database.types';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { readSectionsFromStorage, writeSectionsToStorage, readSettingsFromStorage, writeSettingsToStorage } from '@/lib/data/storage';
+
+function revalidateAllCaches() {
+  try {
+    revalidatePath('/');
+    revalidatePath('/?preview=draft');
+    revalidateTag('site-data');
+    revalidateTag('page-sections');
+    revalidateTag('site-settings');
+  } catch (e) {
+    console.warn('Cache revalidation error:', e);
+  }
+}
 
 function isSupabaseConfigured(): boolean {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -151,13 +163,8 @@ export async function POST(request: NextRequest) {
         } catch {}
       }
 
-      // Revalidate cache for live public page
-      try {
-        revalidatePath('/');
-        revalidatePath('/?preview=draft');
-      } catch {
-        // Non-blocking
-      }
+      // Revalidate all caches immediately
+      revalidateAllCaches();
 
       return NextResponse.json({
         success: true,
@@ -209,9 +216,7 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      try {
-        revalidatePath('/?preview=draft');
-      } catch {}
+      revalidateAllCaches();
 
       return NextResponse.json({
         success: true,
@@ -227,6 +232,7 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString(),
       }));
       writeSectionsToStorage(reordered);
+      revalidateAllCaches();
       return NextResponse.json({ success: true, message: 'Sections reordered.', data: reordered });
     }
 
@@ -248,20 +254,14 @@ export async function POST(request: NextRequest) {
         } catch {}
       }
 
-      try {
-        revalidatePath('/');
-        revalidatePath('/?preview=draft');
-      } catch {}
+      revalidateAllCaches();
 
       return NextResponse.json({ success: true, message: 'Section removed successfully.', data: remaining });
     }
 
     if (action === 'reset') {
       writeSectionsToStorage(initialDefaultSections);
-      try {
-        revalidatePath('/');
-        revalidatePath('/?preview=draft');
-      } catch {}
+      revalidateAllCaches();
       return NextResponse.json({ success: true, message: 'Sections reset to defaults.', data: initialDefaultSections });
     }
 

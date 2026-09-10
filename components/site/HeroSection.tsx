@@ -272,8 +272,12 @@ export function HeroSection({ settings = {}, sectionSettings }: HeroSectionProps
                 🏆
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-[11px] font-extrabold text-foreground leading-none">Top Rated</span>
-                <span className="text-[9px] text-muted-foreground font-semibold mt-0.5">Shopify Developer</span>
+                <span className="text-[11px] font-extrabold text-foreground leading-none">
+                  {sectionSettings?.badge_top_title || 'Top Rated'}
+                </span>
+                <span className="text-[9px] text-muted-foreground font-semibold mt-0.5">
+                  {sectionSettings?.badge_top_subtitle || 'Shopify Developer'}
+                </span>
               </div>
             </motion.div>
 
@@ -288,8 +292,12 @@ export function HeroSection({ settings = {}, sectionSettings }: HeroSectionProps
                 ⚡
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-sm font-black text-foreground leading-none">270+ Stores</span>
-                <span className="text-[10px] text-emerald-500 font-bold mt-0.5">Developed Successfully</span>
+                <span className="text-sm font-black text-foreground leading-none">
+                  {sectionSettings?.badge_bottom_title || '270+ Stores'}
+                </span>
+                <span className="text-[10px] text-emerald-500 font-bold mt-0.5">
+                  {sectionSettings?.badge_bottom_subtitle || 'Developed Successfully'}
+                </span>
               </div>
             </motion.div>
 
@@ -299,8 +307,8 @@ export function HeroSection({ settings = {}, sectionSettings }: HeroSectionProps
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] bg-gradient-to-tr from-primary/30 via-red-500/20 to-accent/30 rounded-full blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 -z-10" />
 
               <Image
-                src="/images/ansarul-anis.png"
-                alt="Ansarul Anis - Shopify Expert"
+                src={sectionSettings?.image_url || settings.hero_graphic_url || '/images/ansarul-anis.png'}
+                alt={sectionSettings?.image_alt || 'Ansarul Anis - Shopify Expert'}
                 fill
                 sizes="(max-width: 768px) 100vw, 500px"
                 priority

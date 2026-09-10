@@ -15,7 +15,7 @@ interface NavbarProps {
   sectionSettings?: SectionSettings;
 }
 
-const navLinks = [
+const defaultNavLinks = [
   { label: 'Home', href: '#home' },
   { label: 'Work', href: '#work' },
   { label: 'Services', href: '#services' },
@@ -27,7 +27,13 @@ const navLinks = [
 export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sectionSettings }: NavbarProps) {
   const displaySiteName = sectionSettings?.heading || siteName;
   const displayCtaLabel = sectionSettings?.primary_cta_label || ctaLabel;
+  const displayCtaUrl = sectionSettings?.primary_cta_url || '#contact';
   const showThemeToggle = sectionSettings?.show_theme_toggle !== false;
+  const isSticky = sectionSettings?.sticky_nav !== false;
+  const navLinks = (sectionSettings?.nav_links && sectionSettings.nav_links.length > 0)
+    ? sectionSettings.nav_links
+    : defaultNavLinks;
+
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -83,7 +89,8 @@ export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sect
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-40 transition-all duration-300 w-full',
+        isSticky ? 'fixed top-0 left-0 right-0 z-40' : 'relative z-40',
+        'transition-all duration-300 w-full',
         isScrolled
           ? 'h-16 sm:h-[72px] glass-nav border-b border-border/60 shadow-sm'
           : 'h-20 sm:h-[80px] bg-transparent border-b border-transparent'
@@ -145,7 +152,13 @@ export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sect
           {showThemeToggle && <ThemeToggle />}
 
           <button
-            onClick={() => scrollTo('#contact')}
+            onClick={() => {
+              if (displayCtaUrl.startsWith('#')) {
+                scrollTo(displayCtaUrl);
+              } else {
+                window.location.href = displayCtaUrl;
+              }
+            }}
             className="hidden sm:inline-flex items-center gap-1.5 px-5 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground shadow-sm hover:opacity-90 transition-all active:scale-[0.98]"
           >
             <span>{displayCtaLabel}</span>
@@ -197,10 +210,17 @@ export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sect
               })}
               <div className="pt-2">
                 <button
-                  onClick={() => scrollTo('#contact')}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (displayCtaUrl.startsWith('#')) {
+                      scrollTo(displayCtaUrl);
+                    } else {
+                      window.location.href = displayCtaUrl;
+                    }
+                  }}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-primary-foreground font-semibold shadow-md hover:opacity-90 transition-opacity"
                 >
-                  <span>{ctaLabel}</span>
+                  <span>{displayCtaLabel}</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </button>
               </div>

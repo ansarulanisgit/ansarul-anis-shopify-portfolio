@@ -90,20 +90,22 @@ export function Footer({
           {/* Connect & Social */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Connect</h4>
-            <div className="flex flex-wrap gap-2">
-              {socialLinks.map((item, idx) => (
-                <a
-                  key={item.platform + idx}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={item.platform}
-                  className="w-9 h-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
-                >
-                  {getSocialIcon(item.platform)}
-                </a>
-              ))}
-            </div>
+            {showSocial && (
+              <div className="flex flex-wrap gap-2">
+                {socialLinks.map((item, idx) => (
+                  <a
+                    key={item.platform + idx}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={item.platform}
+                    className="w-9 h-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                  >
+                    {getSocialIcon(item.platform)}
+                  </a>
+                ))}
+              </div>
+            )}
             <div className="pt-2">
               <Link
                 href="/admin"
@@ -118,7 +120,11 @@ export function Footer({
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div>
-            &copy; {currentYear} {siteName} &middot; {developerName}. All rights reserved. Built with Next.js, React, Tailwind &amp; Supabase.
+            {sectionSettings?.copyright_text ? (
+              sectionSettings.copyright_text
+            ) : (
+              <>&copy; {currentYear} {displaySiteName} &middot; {developerName}. All rights reserved. Built with Next.js, React, Tailwind &amp; Supabase.</>
+            )}
           </div>
 
           <button
