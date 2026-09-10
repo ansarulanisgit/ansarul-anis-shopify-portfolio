@@ -106,14 +106,6 @@ export function Footer({
                 ))}
               </div>
             )}
-            <div className="pt-2">
-              <Link
-                href="/admin"
-                className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-              >
-                Admin Portal
-              </Link>
-            </div>
           </div>
         </div>
 
@@ -123,7 +115,7 @@ export function Footer({
             {sectionSettings?.copyright_text ? (
               sectionSettings.copyright_text
             ) : (
-              <>&copy; {currentYear} {displaySiteName} &middot; {developerName}. All rights reserved. Built with Next.js, React, Tailwind &amp; Supabase.</>
+              <>&copy; {currentYear} {displaySiteName}. All rights reserved.</>
             )}
           </div>
 
