@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { action, sections, pageKey = 'home', sectionId, sectionKey } = body;
 
-    // Always persist to local storage first so changes are NEVER lost
     let currentSections = readSectionsFromStorage(pageKey);
 
     if (action === 'publish') {
@@ -104,8 +103,7 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString(),
       }));
 
-      writeSectionsToStorage(publishedSections);
-
+      // 1. Supabase First
       if (isSupabaseConfigured()) {
         try {
           const supabase = createAdminSupabaseClient();
@@ -155,12 +153,15 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Sync hero_trust_chips to local settings.json
-      const heroSec = publishedSections.find((s) => s.section_key === 'home_hero' || s.section_type === 'hero');
-      if (heroSec?.settings?.hero_trust_chips) {
-        try {
+      // 2. Safe storage update
+      try {
+        writeSectionsToStorage(publishedSections);
+        const heroSec = publishedSections.find((s) => s.section_key === 'home_hero' || s.section_type === 'hero');
+        if (heroSec?.settings?.hero_trust_chips) {
           writeSettingsToStorage({ hero_trust_chips: heroSec.settings.hero_trust_chips });
-        } catch {}
+        }
+      } catch (storageErr) {
+        console.warn('Storage sync warning:', storageErr);
       }
 
       // Revalidate all caches immediately
@@ -181,8 +182,7 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString(),
       }));
 
-      writeSectionsToStorage(draftSections);
-
+      // 1. Supabase First
       if (isSupabaseConfigured()) {
         try {
           const supabase = createAdminSupabaseClient();
@@ -216,6 +216,13 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      // 2. Safe storage update
+      try {
+        writeSectionsToStorage(draftSections);
+      } catch (storageErr) {
+        console.warn('Storage draft sync warning:', storageErr);
+      }
+
       revalidateAllCaches();
 
       return NextResponse.json({
@@ -231,7 +238,26 @@ export async function POST(request: NextRequest) {
         order_index: idx,
         updated_at: new Date().toISOString(),
       }));
-      writeSectionsToStorage(reordered);
+
+      if (isSupabaseConfigured()) {
+        try {
+          const supabase = createAdminSupabaseClient();
+          for (const sec of reordered) {
+            if (isValidUuid(sec.id)) {
+              await (supabase.from('page_sections') as any).update({ order_index: sec.order_index }).eq('id', sec.id);
+            } else if (sec.section_key) {
+              await (supabase.from('page_sections') as any).update({ order_index: sec.order_index }).eq('section_key', sec.section_key);
+            }
+          }
+        } catch (supabaseErr) {
+          console.error('Supabase reorder sync error:', supabaseErr);
+        }
+      }
+
+      try {
+        writeSectionsToStorage(reordered);
+      } catch {}
+
       revalidateAllCaches();
       return NextResponse.json({ success: true, message: 'Sections reordered.', data: reordered });
     }
@@ -241,8 +267,6 @@ export async function POST(request: NextRequest) {
         .filter((s) => s.id !== sectionId && s.section_key !== sectionKey)
         .map((s, idx) => ({ ...s, order_index: idx }));
 
-      writeSectionsToStorage(remaining);
-
       if (isSupabaseConfigured() && (sectionId || sectionKey)) {
         try {
           const supabase = createAdminSupabaseClient();
@@ -251,8 +275,14 @@ export async function POST(request: NextRequest) {
           } else if (sectionKey) {
             await supabase.from('page_sections').delete().eq('section_key', sectionKey);
           }
-        } catch {}
+        } catch (supabaseErr) {
+          console.error('Supabase delete error:', supabaseErr);
+        }
       }
+
+      try {
+        writeSectionsToStorage(remaining);
+      } catch {}
 
       revalidateAllCaches();
 
@@ -260,7 +290,37 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === 'reset') {
-      writeSectionsToStorage(initialDefaultSections);
+      if (isSupabaseConfigured()) {
+        try {
+          const supabase = createAdminSupabaseClient();
+          for (const sec of initialDefaultSections) {
+            const payload: any = {
+              page_key: sec.page_key || 'home',
+              section_key: sec.section_key,
+              section_type: sec.section_type,
+              title: sec.title,
+              order_index: sec.order_index,
+              is_enabled: sec.is_enabled !== false,
+              is_visible: sec.is_visible !== false,
+              desktop_visible: sec.desktop_visible !== false,
+              tablet_visible: sec.tablet_visible !== false,
+              mobile_visible: sec.mobile_visible !== false,
+              status: 'published',
+              settings: sec.settings || {},
+              draft_settings: null,
+              updated_at: new Date().toISOString(),
+            };
+            await (supabase.from('page_sections') as any).upsert(payload, { onConflict: 'section_key' });
+          }
+        } catch (supabaseErr) {
+          console.error('Supabase reset error:', supabaseErr);
+        }
+      }
+
+      try {
+        writeSectionsToStorage(initialDefaultSections);
+      } catch {}
+
       revalidateAllCaches();
       return NextResponse.json({ success: true, message: 'Sections reset to defaults.', data: initialDefaultSections });
     }

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/lib/supabase/server';
 import { readSettingsFromStorage, writeSettingsToStorage, readSectionsFromStorage, writeSectionsToStorage } from '@/lib/data/storage';
 import { defaultSiteSettings } from '@/lib/data/seed-data';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 function isSupabaseConfigured(): boolean {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -203,6 +203,9 @@ export async function POST(request: NextRequest) {
     try {
       revalidatePath('/');
       revalidatePath('/?preview=draft');
+      revalidateTag('site-settings');
+      revalidateTag('site-data');
+      revalidateTag('page-sections');
     } catch {}
 
     return NextResponse.json({
