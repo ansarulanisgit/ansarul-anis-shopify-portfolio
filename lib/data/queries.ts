@@ -1,4 +1,6 @@
-import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase/server';
+import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
+import { createAdminSupabaseClient } from '@/lib/supabase/server';
 import {
   defaultSiteSettings,
   defaultSeoMeta,
@@ -17,7 +19,6 @@ import {
   SiteSettingsMap,
   SeoMeta,
   Lead,
-  CtaEventType,
   PageSection,
 } from '@/types/database.types';
 
@@ -29,168 +30,204 @@ function isSupabaseConfigured(): boolean {
   return Boolean(url && key && !url.includes('placeholder'));
 }
 
-export async function getSiteSettings(): Promise<SiteSettingsMap> {
+export const getSiteSettings = cache(async (): Promise<SiteSettingsMap> => {
   if (!isSupabaseConfigured()) {
     return readSettingsFromStorage();
   }
 
-  try {
-    const supabase = createAdminSupabaseClient();
-    const { data, error } = await supabase
-      .from('site_settings')
-      .select('key, value');
+  return unstable_cache(
+    async () => {
+      try {
+        const supabase = createAdminSupabaseClient();
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('key, value');
 
-    if (error || !data || data.length === 0) {
-      return defaultSiteSettings;
-    }
+        if (error || !data || data.length === 0) {
+          return defaultSiteSettings;
+        }
 
-    const settingsMap = { ...defaultSiteSettings };
-    for (const item of data) {
-      if (item.key === 'general' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'hero' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'trust_bar' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'about' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'contact' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'appearance' && typeof item.value === 'object' && item.value !== null) {
-        settingsMap.appearance = { ...settingsMap.appearance, ...(item.value as any) };
+        const settingsMap = { ...defaultSiteSettings };
+        for (const item of data) {
+          if (item.key === 'general' && typeof item.value === 'object' && item.value !== null) {
+            Object.assign(settingsMap, item.value);
+          } else if (item.key === 'hero' && typeof item.value === 'object' && item.value !== null) {
+            Object.assign(settingsMap, item.value);
+          } else if (item.key === 'trust_bar' && typeof item.value === 'object' && item.value !== null) {
+            Object.assign(settingsMap, item.value);
+          } else if (item.key === 'about' && typeof item.value === 'object' && item.value !== null) {
+            Object.assign(settingsMap, item.value);
+          } else if (item.key === 'contact' && typeof item.value === 'object' && item.value !== null) {
+            Object.assign(settingsMap, item.value);
+          } else if (item.key === 'appearance' && typeof item.value === 'object' && item.value !== null) {
+            settingsMap.appearance = { ...settingsMap.appearance, ...(item.value as any) };
+          }
+        }
+        return settingsMap;
+      } catch (err) {
+        console.warn('Error fetching site_settings from Supabase, using fallback:', err);
+        return defaultSiteSettings;
       }
-    }
-    return settingsMap;
-  } catch (err) {
-    console.warn('Error fetching site_settings from Supabase, using fallback:', err);
-    return defaultSiteSettings;
-  }
-}
+    },
+    ['site-settings'],
+    { revalidate: 3600, tags: ['site-settings', 'site-data'] }
+  )();
+});
 
-export async function getSeoMeta(pageKey: string = 'home'): Promise<SeoMeta> {
+export const getSeoMeta = cache(async (pageKey: string = 'home'): Promise<SeoMeta> => {
   if (!isSupabaseConfigured()) {
     return defaultSeoMeta;
   }
 
-  try {
-    const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from('seo_meta')
-      .select('*')
-      .eq('page_key', pageKey)
-      .single();
+  return unstable_cache(
+    async () => {
+      try {
+        const supabase = createAdminSupabaseClient();
+        const { data, error } = await supabase
+          .from('seo_meta')
+          .select('*')
+          .eq('page_key', pageKey)
+          .single();
 
-    if (error || !data) {
-      return defaultSeoMeta;
-    }
+        if (error || !data) {
+          return defaultSeoMeta;
+        }
 
-    return data as SeoMeta;
-  } catch {
-    return defaultSeoMeta;
-  }
-}
+        return data as SeoMeta;
+      } catch {
+        return defaultSeoMeta;
+      }
+    },
+    ['seo-meta', pageKey],
+    { revalidate: 3600, tags: ['seo-meta', 'site-data'] }
+  )();
+});
 
-export async function getProjects(publishedOnly: boolean = true): Promise<Project[]> {
+export const getProjects = cache(async (publishedOnly: boolean = true): Promise<Project[]> => {
   if (!isSupabaseConfigured()) {
     return publishedOnly
       ? defaultProjects.filter((p) => p.status === 'published').sort((a, b) => a.order_index - b.order_index)
       : defaultProjects;
   }
 
-  try {
-    const supabase = createServerSupabaseClient();
-    let query = supabase
-      .from('projects')
-      .select('*, images:project_images(*)');
+  return unstable_cache(
+    async () => {
+      try {
+        const supabase = createAdminSupabaseClient();
+        let query = supabase
+          .from('projects')
+          .select('*, images:project_images(*)');
 
-    if (publishedOnly) {
-      query = query.eq('status', 'published');
-    }
+        if (publishedOnly) {
+          query = query.eq('status', 'published');
+        }
 
-    const { data, error } = await query
-      .order('featured', { ascending: false })
-      .order('order_index', { ascending: true });
+        const { data, error } = await query
+          .order('featured', { ascending: false })
+          .order('order_index', { ascending: true });
 
-    if (error || !data || data.length === 0) {
-      return defaultProjects;
-    }
+        if (error || !data || data.length === 0) {
+          return defaultProjects;
+        }
 
-    return data as Project[];
-  } catch {
-    return defaultProjects;
-  }
-}
+        return data as Project[];
+      } catch {
+        return defaultProjects;
+      }
+    },
+    ['projects', String(publishedOnly)],
+    { revalidate: 3600, tags: ['projects', 'site-data'] }
+  )();
+});
 
-export async function getServices(): Promise<Service[]> {
+export const getServices = cache(async (): Promise<Service[]> => {
   if (!isSupabaseConfigured()) {
     return defaultServices.sort((a, b) => a.order_index - b.order_index);
   }
 
-  try {
-    const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from('services')
-      .select('*')
-      .order('order_index', { ascending: true });
+  return unstable_cache(
+    async () => {
+      try {
+        const supabase = createAdminSupabaseClient();
+        const { data, error } = await supabase
+          .from('services')
+          .select('*')
+          .order('order_index', { ascending: true });
 
-    if (error || !data || data.length === 0) {
-      return defaultServices;
-    }
+        if (error || !data || data.length === 0) {
+          return defaultServices;
+        }
 
-    return data as Service[];
-  } catch {
-    return defaultServices;
-  }
-}
+        return data as Service[];
+      } catch {
+        return defaultServices;
+      }
+    },
+    ['services'],
+    { revalidate: 3600, tags: ['services', 'site-data'] }
+  )();
+});
 
-export async function getTestimonials(featuredOnly: boolean = true): Promise<Testimonial[]> {
+export const getTestimonials = cache(async (featuredOnly: boolean = true): Promise<Testimonial[]> => {
   if (!isSupabaseConfigured()) {
     return featuredOnly
       ? defaultTestimonials.filter((t) => t.featured).sort((a, b) => a.order_index - b.order_index)
       : defaultTestimonials;
   }
 
-  try {
-    const supabase = createServerSupabaseClient();
-    let query = supabase.from('testimonials').select('*');
+  return unstable_cache(
+    async () => {
+      try {
+        const supabase = createAdminSupabaseClient();
+        let query = supabase.from('testimonials').select('*');
 
-    if (featuredOnly) {
-      query = query.eq('featured', true);
-    }
+        if (featuredOnly) {
+          query = query.eq('featured', true);
+        }
 
-    const { data, error } = await query.order('order_index', { ascending: true });
+        const { data, error } = await query.order('order_index', { ascending: true });
 
-    if (error || !data || data.length === 0) {
-      return defaultTestimonials;
-    }
+        if (error || !data || data.length === 0) {
+          return defaultTestimonials;
+        }
 
-    return data as Testimonial[];
-  } catch {
-    return defaultTestimonials;
-  }
-}
+        return data as Testimonial[];
+      } catch {
+        return defaultTestimonials;
+      }
+    },
+    ['testimonials', String(featuredOnly)],
+    { revalidate: 3600, tags: ['testimonials', 'site-data'] }
+  )();
+});
 
-export async function getFaqs(): Promise<FAQ[]> {
+export const getFaqs = cache(async (): Promise<FAQ[]> => {
   if (!isSupabaseConfigured()) {
     return defaultFaqs.sort((a, b) => a.order_index - b.order_index);
   }
 
-  try {
-    const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from('faqs')
-      .select('*')
-      .order('order_index', { ascending: true });
+  return unstable_cache(
+    async () => {
+      try {
+        const supabase = createAdminSupabaseClient();
+        const { data, error } = await supabase
+          .from('faqs')
+          .select('*')
+          .order('order_index', { ascending: true });
 
-    if (error || !data || data.length === 0) {
-      return defaultFaqs;
-    }
+        if (error || !data || data.length === 0) {
+          return defaultFaqs;
+        }
 
-    return data as FAQ[];
-  } catch {
-    return defaultFaqs;
-  }
-}
+        return data as FAQ[];
+      } catch {
+        return defaultFaqs;
+      }
+    },
+    ['faqs'],
+    { revalidate: 3600, tags: ['faqs', 'site-data'] }
+  )();
+});
 
 export async function getLeads(): Promise<Lead[]> {
   if (!isSupabaseConfigured()) {
@@ -198,7 +235,7 @@ export async function getLeads(): Promise<Lead[]> {
   }
 
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = createAdminSupabaseClient();
     const { data, error } = await supabase
       .from('leads')
       .select('*')
@@ -214,10 +251,10 @@ export async function getLeads(): Promise<Lead[]> {
   }
 }
 
-export async function getPageSections(
+export const getPageSections = cache(async (
   pageKey: string = 'home',
   includeDrafts: boolean = false
-): Promise<PageSection[]> {
+): Promise<PageSection[]> => {
   if (!isSupabaseConfigured()) {
     const all = readSectionsFromStorage(pageKey);
     return all
@@ -235,31 +272,57 @@ export async function getPageSections(
       .sort((a, b) => a.order_index - b.order_index);
   }
 
-  try {
-    const supabase = createServerSupabaseClient();
-    let query = supabase
-      .from('page_sections')
-      .select('*')
-      .eq('page_key', pageKey)
-      .order('order_index', { ascending: true });
+  // Draft mode is real-time, never cached
+  if (includeDrafts) {
+    try {
+      const supabase = createAdminSupabaseClient();
+      const { data, error } = await supabase
+        .from('page_sections')
+        .select('*')
+        .eq('page_key', pageKey)
+        .order('order_index', { ascending: true });
 
-    if (!includeDrafts) {
-      query = query.eq('status', 'published').eq('is_enabled', true);
-    }
+      if (error || !data || data.length === 0) {
+        return initialDefaultSections
+          .filter((s) => s.page_key === pageKey)
+          .sort((a, b) => a.order_index - b.order_index);
+      }
 
-    const { data, error } = await query;
-
-    if (error || !data || data.length === 0) {
+      return data as PageSection[];
+    } catch {
       return initialDefaultSections
         .filter((s) => s.page_key === pageKey)
         .sort((a, b) => a.order_index - b.order_index);
     }
-
-    return data as PageSection[];
-  } catch {
-    return initialDefaultSections
-      .filter((s) => s.page_key === pageKey)
-      .sort((a, b) => a.order_index - b.order_index);
   }
-}
+
+  return unstable_cache(
+    async () => {
+      try {
+        const supabase = createAdminSupabaseClient();
+        const { data, error } = await supabase
+          .from('page_sections')
+          .select('*')
+          .eq('page_key', pageKey)
+          .eq('status', 'published')
+          .eq('is_enabled', true)
+          .order('order_index', { ascending: true });
+
+        if (error || !data || data.length === 0) {
+          return initialDefaultSections
+            .filter((s) => s.page_key === pageKey)
+            .sort((a, b) => a.order_index - b.order_index);
+        }
+
+        return data as PageSection[];
+      } catch {
+        return initialDefaultSections
+          .filter((s) => s.page_key === pageKey)
+          .sort((a, b) => a.order_index - b.order_index);
+      }
+    },
+    ['page-sections', pageKey],
+    { revalidate: 3600, tags: ['page-sections', 'site-data'] }
+  )();
+});
 

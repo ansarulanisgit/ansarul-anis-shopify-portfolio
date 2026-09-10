@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 async function handleRevalidate(request: NextRequest) {
   try {
@@ -14,6 +14,9 @@ async function handleRevalidate(request: NextRequest) {
     }
 
     revalidatePath(path);
+    try {
+      revalidateTag('site-data');
+    } catch {}
     return NextResponse.json({ revalidated: true, path, now: Date.now() });
   } catch (err: any) {
     return NextResponse.json({ message: 'Error revalidating', error: err.message }, { status: 500 });
