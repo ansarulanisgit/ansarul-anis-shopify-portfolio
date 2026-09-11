@@ -487,6 +487,11 @@ export interface SiteSettingsMap {
   exit_popup_whatsapp_tag?: string;
   exit_popup_submit_label?: string;
   notification_email?: string;
+  email_sender_name?: string;
+  email_subject_template?: string;
+  email_header_title?: string;
+  email_template_style?: 'modern' | 'minimal' | 'executive';
+  email_accent_color?: string;
   email_provider?: 'smtp' | 'resend';
   smtp_host?: string;
   smtp_port?: number | string;

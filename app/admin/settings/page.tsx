@@ -1459,6 +1459,62 @@ export default function AdminSettingsPage() {
               )}
             </div>
 
+            {/* 3. Email Template Customization */}
+            <div className="p-5 rounded-xl bg-card border border-border/80 shadow-2xs space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Email Template &amp; Formatting Customization
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-foreground">Sender Display Name</label>
+                  <Input
+                    value={settings.email_sender_name || 'AnisShopify Contact'}
+                    onChange={(e) => setSettings({ ...settings, email_sender_name: e.target.value })}
+                    placeholder="AnisShopify Contact"
+                    className="text-xs"
+                  />
+                  <p className="text-[10px] text-muted-foreground">Appears in the client inbox From header.</p>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-foreground">Subject Line Template</label>
+                  <Input
+                    value={settings.email_subject_template || '⚡ New Lead: {subject} ({name})'}
+                    onChange={(e) => setSettings({ ...settings, email_subject_template: e.target.value })}
+                    placeholder="⚡ New Lead: {subject} ({name})"
+                    className="text-xs font-mono"
+                  />
+                  <p className="text-[10px] text-muted-foreground">Placeholders: &#123;name&#125;, &#123;email&#125;, &#123;subject&#125;, &#123;project_type&#125;, &#123;budget&#125;</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-foreground">HTML Email Header Tagline</label>
+                  <Input
+                    value={settings.email_header_title || '⚡ New Client Inquiry • AnisShopify'}
+                    onChange={(e) => setSettings({ ...settings, email_header_title: e.target.value })}
+                    placeholder="⚡ New Client Inquiry • AnisShopify"
+                    className="text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-foreground">Template Header Theme Style</label>
+                  <select
+                    value={settings.email_template_style || 'modern'}
+                    onChange={(e) => setSettings({ ...settings, email_template_style: e.target.value as any })}
+                    className="w-full h-9 rounded-xl border border-input bg-background/80 px-3 text-xs font-semibold"
+                  >
+                    <option value="modern">Modern Dark Blue Header (#0f172a)</option>
+                    <option value="minimal">Clean Minimalist White</option>
+                    <option value="executive">Executive Midnight Slate (#030712)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             {/* Actions: Save Settings & Send Live Test */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
               <button
@@ -1468,6 +1524,11 @@ export default function AdminSettingsPage() {
                     whatsapp_number: settings.whatsapp_number,
                     whatsapp_message: settings.whatsapp_message,
                     notification_email: settings.notification_email,
+                    email_sender_name: settings.email_sender_name,
+                    email_subject_template: settings.email_subject_template,
+                    email_header_title: settings.email_header_title,
+                    email_template_style: settings.email_template_style,
+                    email_accent_color: settings.email_accent_color,
                     email_provider: settings.email_provider,
                     smtp_host: settings.smtp_host,
                     smtp_port: settings.smtp_port,
@@ -1493,6 +1554,11 @@ export default function AdminSettingsPage() {
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
                         notification_email: settings.notification_email,
+                        email_sender_name: settings.email_sender_name,
+                        email_subject_template: settings.email_subject_template,
+                        email_header_title: settings.email_header_title,
+                        email_template_style: settings.email_template_style,
+                        email_accent_color: settings.email_accent_color,
                         resend_api_key: settings.resend_api_key,
                         smtp_user: settings.smtp_user,
                         smtp_pass: settings.smtp_pass,
