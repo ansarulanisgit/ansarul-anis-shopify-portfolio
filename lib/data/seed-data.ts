@@ -717,50 +717,162 @@ export const defaultTestimonials: Testimonial[] = [
 
 export const defaultFaqs: FAQ[] = [
   {
-    id: 'faq-1',
-    question: 'How long does it take to build a Shopify store from scratch?',
-    answer: 'A standard custom Shopify store setup takes 3 to 5 weeks from kickoff to launch. Single high-converting landing pages are delivered in 5 to 7 business days. Complex headless or enterprise Shopify ecommerce website development projects typically run 6 to 8 weeks.',
+    id: '00000000-0000-4000-8000-000000000001',
+    question: 'What Shopify services do you offer?',
+    answer: 'I design and develop Shopify stores, custom themes, landing pages, product and collection pages, store redesigns, dropshipping stores, and custom Shopify features. I also work on integrations, performance optimization, and technical SEO.',
     order_index: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
   {
-    id: 'faq-2',
-    question: 'How does your Shopify website development pricing work?',
-    answer: 'I work on fixed-price quotes — no surprise billing. Landing pages start at $1,500, full custom Shopify store design builds start at $3,500, and headless or enterprise Shopify ecommerce website projects start at $6,000. All quotes include testing, migration, and post-launch support.',
+    id: '00000000-0000-4000-8000-000000000002',
+    question: 'Can you build a Shopify store from scratch?',
+    answer: 'Yes. I can take your store from idea to launch, including the design, theme development, page structure, navigation, responsive layouts, essential integrations, and final optimization.',
     order_index: 2,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
   {
-    id: 'faq-3',
-    question: 'What\'s your process to create a Shopify store?',
-    answer: 'We start with a strategic discovery call to map your brand goals and conversion bottlenecks. I then present interactive Figma prototypes. Once approved, I build your Shopify website in a staging environment, conduct rigorous cross-browser and mobile testing, and perform a seamless live migration — with 2 rounds of revisions included.',
+    id: '00000000-0000-4000-8000-000000000003',
+    question: 'How long does it take to build a Shopify store from scratch?',
+    answer: 'It depends on the size and complexity of the project. A simple store or focused landing page can be completed much faster than a fully custom store with multiple templates and integrations. After reviewing your requirements, I\'ll give you a realistic timeline before we start.',
     order_index: 3,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
   {
-    id: 'faq-4',
-    question: 'Can I manage content myself after the Shopify store setup?',
-    answer: 'Absolutely. Every Shopify store I build uses native Shopify 2.0 architecture (JSON templates and customizable schema blocks). Your team can change text, images, products, and banners without writing code.',
+    id: '00000000-0000-4000-8000-000000000004',
+    question: 'What is your typical project timeline for a custom Shopify store?',
+    answer: 'Most custom projects depend on the number of pages, level of customization, content readiness, and integrations involved. I break the work into clear stages so you can see the progress throughout the project and avoid unnecessary delays.',
     order_index: 4,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
   {
-    id: 'faq-5',
-    question: 'Do you build Shopify dropshipping stores?',
-    answer: 'Yes! I specialize in Shopify dropshipping store builds optimized for paid traffic acquisition. This includes one-click checkout flows, dynamic upsells, supplier app integrations, and speed-optimized themes designed to maximize AOV and minimize CPA for dropshipping businesses.',
+    id: '00000000-0000-4000-8000-000000000005',
+    question: 'How does your Shopify website development pricing work?',
+    answer: 'I price projects based on their scope rather than using a one-size-fits-all rate. The final cost depends on the design, number of pages, custom development, integrations, functionality, and overall requirements. Once I understand your project, I\'ll provide a clear quote.',
     order_index: 5,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
   {
-    id: 'faq-6',
-    question: 'Do you provide support after the Shopify website launches?',
-    answer: 'Every project includes 30 days of complimentary post-launch support covering bug fixes, tweaks, and walkthrough training. For brands wanting continuous CRO and feature rollouts, I offer monthly retainer packages.',
+    id: '00000000-0000-4000-8000-000000000006',
+    question: 'Can you redesign my existing Shopify store?',
+    answer: 'Absolutely. I can redesign your existing store while keeping the things that already work. I\'ll focus on improving the visual design, user experience, mobile experience, performance, and overall customer journey.',
     order_index: 6,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000007',
+    question: 'Do you build Shopify dropshipping stores?',
+    answer: 'Yes. I can build and customize Shopify dropshipping stores with a professional storefront, product-focused pages, responsive design, essential integrations, and a customer experience designed around your target audience.',
+    order_index: 7,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000008',
+    question: 'Do you create custom Shopify themes?',
+    answer: 'Yes. I can build a custom Shopify theme specifically around your brand and requirements rather than relying entirely on a pre-built theme. This gives you greater control over the design, functionality, and customer experience.',
+    order_index: 8,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000009',
+    question: 'Can you customize an existing Shopify theme?',
+    answer: 'Yes. If you already have a theme you like, I can customize its sections, layouts, product pages, navigation, cart, styling, and functionality to make it better suited to your brand.',
+    order_index: 9,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-00000000000a',
+    question: 'What\'s your process for creating a Shopify store?',
+    answer: 'I typically start by understanding your goals, audience, products, and references. Then I plan the structure, work on the design and development, build and customize the Shopify storefront, test everything across devices, optimize the store, and prepare it for launch.',
+    order_index: 10,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-00000000000b',
+    question: 'What is your development and revision process?',
+    answer: 'I work in clear stages so feedback can be handled efficiently. After each major stage, you can review the work and provide feedback. I then make the agreed revisions before moving to the next stage.',
+    order_index: 11,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-00000000000c',
+    question: 'Will I be able to edit and update the content myself after launch?',
+    answer: 'Yes. I build Shopify stores using Shopify\'s content management features wherever possible, so you can update products, images, text, collections, and other content yourself without needing a developer for everyday changes.',
+    order_index: 12,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-00000000000d',
+    question: 'Can you create high-converting Shopify landing pages?',
+    answer: 'Yes. I create landing pages with a clear visual hierarchy, compelling messaging, strong CTAs, product benefits, trust elements, social proof, and responsive layouts designed to guide visitors toward taking action.',
+    order_index: 13,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-00000000000e',
+    question: 'Can you make my Shopify store mobile-friendly?',
+    answer: 'Absolutely. I make sure the storefront works properly across desktop, tablet, and mobile, with particular attention to navigation, product pages, images, buttons, forms, and the overall mobile shopping experience.',
+    order_index: 14,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-00000000000f',
+    question: 'Can you improve my Shopify store\'s speed and performance?',
+    answer: 'Yes. I can identify and optimize common performance issues such as oversized images, unnecessary scripts, excessive apps, third-party code, and inefficient theme code to create a faster shopping experience.',
+    order_index: 15,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000010',
+    question: 'Can you optimize my Shopify store for SEO?',
+    answer: 'Yes. I can work on important Shopify SEO elements including page titles, meta descriptions, headings, URLs, internal linking, image optimization, structured data, and technical SEO fundamentals.',
+    order_index: 16,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000011',
+    question: 'Can you integrate third-party apps and services with Shopify?',
+    answer: 'Yes. I can integrate Shopify with tools and services such as email marketing, reviews, subscriptions, analytics, CRMs, automation platforms, and other third-party APIs based on your requirements.',
+    order_index: 17,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000012',
+    question: 'Do you build custom Shopify functionality?',
+    answer: 'Yes. If something isn\'t available through Shopify\'s standard features, I can develop custom functionality using Liquid, JavaScript, Shopify APIs, webhooks, apps, or other appropriate technologies.',
+    order_index: 18,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000013',
+    question: 'Do you provide ongoing support after the Shopify website launches?',
+    answer: 'Yes. I can continue helping after launch with updates, fixes, new sections, custom features, performance improvements, SEO improvements, and other ongoing Shopify development needs.',
+    order_index: 19,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000014',
+    question: 'How do I get started with my Shopify project?',
+    answer: 'Just get in touch and tell me what you\'d like to build, redesign, or improve. If you have an existing store, reference websites, Figma designs, or a project brief, feel free to share them. I\'ll review your requirements and recommend the best way to move forward.',
+    order_index: 20,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   }

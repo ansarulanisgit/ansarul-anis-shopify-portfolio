@@ -21,7 +21,7 @@
         },
         {
           "href": "#work",
-          "label": "Work"
+          "label": "Projects"
         },
         {
           "href": "#services",
@@ -48,7 +48,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.232672+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "e81dffd3-5314-492e-9572-6aa696657b1c",
@@ -74,14 +74,14 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.443744+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "059b2a34-99e7-4ac0-929d-fbc5abb37213",
     "page_key": "home",
     "section_key": "home_trust_bar",
     "section_type": "trust_bar",
-    "title": "Trust Bar",
+    "title": "Trust Bar Countdown",
     "order_index": 2,
     "is_enabled": true,
     "is_visible": true,
@@ -94,7 +94,7 @@
         {
           "id": "ts-1",
           "type": "stat",
-          "stat_label": "Years Freelancing",
+          "stat_label": "Years Experience",
           "stat_value": "5+"
         },
         {
@@ -124,7 +124,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.658133+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "7da111de-9d2f-4066-a0d2-edf285eb01d2",
@@ -153,7 +153,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.87758+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "eec0fd20-49da-4a59-a6a2-63b197770a81",
@@ -181,7 +181,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.059479+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "5e94db79-8a37-420d-9175-584ee8aba24b",
@@ -210,7 +210,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.274204+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "2c7bf578-27d5-450f-9585-f15457f55b7a",
@@ -219,7 +219,7 @@
     "section_type": "about",
     "title": "About Developer",
     "order_index": 6,
-    "is_enabled": true,
+    "is_enabled": false,
     "is_visible": true,
     "desktop_visible": true,
     "tablet_visible": true,
@@ -254,7 +254,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.463688+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "4044cc3e-1fe4-42d5-ba38-20af0f4abe16",
@@ -281,7 +281,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.684856+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "8c9bf5f1-42af-46b9-86f1-8113210fa508",
@@ -309,7 +309,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.899258+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "eee5cac9-d94d-48a5-b8fc-b02d31cc864c",
@@ -333,7 +333,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:03.131833+00:00",
-    "updated_at": "2026-09-11T04:04:51.203Z"
+    "updated_at": "2026-09-11T06:24:13.237Z"
   },
   {
     "id": "f7b8c9d0-1e2f-4a5b-8c9d-0e1f2a3b4c5d",
@@ -349,16 +349,21 @@
     "mobile_visible": true,
     "status": "published",
     "settings": {
+      "exit_popup_title": "Let's Build Your Dream Shopify Store",
       "exit_popup_enabled": true,
       "exit_popup_eyebrow": "WAIT! BEFORE YOU GO",
-      "exit_popup_title": "Let's Build Your Dream Shopify Store",
+      "exit_popup_delay_sec": 30,
+      "exit_popup_scroll_px": 600,
       "exit_popup_subheading": "Get a Free 15-Minute Shopify Audit & Fixed Quote for your project. Reach out on WhatsApp or drop a quick line below!",
-      "exit_popup_whatsapp_label": "Chat on WhatsApp",
+      "exit_popup_submit_label": "Get Free Audit & Quote",
       "exit_popup_whatsapp_tag": "",
-      "exit_popup_submit_label": "Get Free Audit & Quote"
+      "exit_popup_whatsapp_label": "Chat on WhatsApp",
+      "exit_popup_trigger_exit_intent": true,
+      "exit_popup_trigger_delay_enabled": false,
+      "exit_popup_trigger_scroll_enabled": true
     },
     "draft_settings": null,
-    "created_at": "2026-09-11T10:00:00.000Z",
-    "updated_at": "2026-09-11T10:00:00.000Z"
+    "created_at": "2026-09-11T04:28:46.875+00:00",
+    "updated_at": "2026-09-11T06:24:13.237Z"
   }
 ]
