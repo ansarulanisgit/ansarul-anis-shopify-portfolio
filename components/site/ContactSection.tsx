@@ -260,14 +260,14 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                       <label className="text-xs font-semibold text-foreground">Estimated Budget</label>
                       <Select {...register('budget_range')}>
                         <option value="">Select one..</option>
+                        <option value="$50-$200">$50 - $200 (Minor Customization & App Setup)</option>
                         <option value="$100-$300">$100 - $300 (Small Fixes & Quick Tweaks)</option>
-                        <option value="$300-$500">$300 - $500 (Minor Customization & App Setup)</option>
-                        <option value="$500-$800">$500 - $800 (Speed & Technical SEO Audit)</option>
-                        <option value="$800-$1200">$800 - $1,200 (High-Converting Landing Page)</option>
-                        <option value="$1200-$2000">$1,200 - $2,000 (Shopify Dropshipping / Basic Store)</option>
-                        <option value="$2000-$3500">$2,000 - $3,500 (Full Store Design & Redesign)</option>
-                        <option value="$3500-$5000">$3,500 - $5,000 (Custom Theme & Advanced B2B Build)</option>
-                        <option value="$5000+">$5,000+ (Headless Shopify / Enterprise Plus)</option>
+                        <option value="$200-$450">$200 - $450 (Speed & Technical SEO Audit)</option>
+                        <option value="$450-$800">$450 - $800 (High-Converting Landing Page)</option>
+                        <option value="$800-$1500">$800 - $1500 (Shopify Dropshipping / Basic Store)</option>
+                        <option value="$1500-$2500">$1500 - $2500 (Full Store Design & Redesign)</option>
+                        <option value="$2500-$4000">$2,500 - $4000 (Custom Theme & Advanced B2B Build)</option>
+                        <option value="$4000+">$4000+ (Headless Shopify / Enterprise Plus)</option>
                       </Select>
                       {errors.budget_range && (
                         <p className="text-xs text-destructive">{errors.budget_range.message}</p>
