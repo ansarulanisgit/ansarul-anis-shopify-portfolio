@@ -121,8 +121,8 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
           <div className="lg:col-span-5 flex flex-col space-y-6">
             <div className="p-8 rounded-2xl bg-card border border-border/80 shadow-sm flex flex-col justify-between">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-4 border border-emerald-500/20">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-xl bg-primary/10 text-primary text-xs font-semibold mb-4 border border-primary/20">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   Fastest Response (under 20 minutes)
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-2">Prefer to Chat Directly?</h3>

@@ -51,11 +51,16 @@ export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sect
 
   // IntersectionObserver for active section highlighting
   React.useEffect(() => {
-    const sections = ['home', 'work', 'services', 'testimonials', 'faq', 'contact'];
+    const sectionIds = Array.from(
+      new Set([
+        'home',
+        ...navLinks.map((link) => link.href.replace('#', '')).filter(Boolean),
+      ])
+    );
     const observers: IntersectionObserver[] = [];
 
-    sections.forEach((id) => {
-      const el = document.getElementById(id);
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id) || document.getElementById('home_' + id);
       if (!el) return;
 
       const observer = new IntersectionObserver(
@@ -66,7 +71,7 @@ export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sect
             }
           });
         },
-        { rootMargin: '-30% 0px -60% 0px' }
+        { rootMargin: '-20% 0px -45% 0px' }
       );
 
       observer.observe(el);
@@ -76,7 +81,7 @@ export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sect
     return () => {
       observers.forEach((obs) => obs.disconnect());
     };
-  }, []);
+  }, [navLinks]);
 
   const scrollTo = (href: string) => {
     setMobileMenuOpen(false);
