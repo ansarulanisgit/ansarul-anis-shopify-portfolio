@@ -16,7 +16,7 @@ export function WhatsAppButton({
   const [isVisible, setIsVisible] = React.useState(false);
 
   React.useEffect(() => {
-    // Show after slight scroll to not clutter the initial hero view
+    // Show after slight scroll to not clutter initial hero view
     const handleScroll = () => {
       setIsVisible(window.scrollY > 150);
     };
@@ -53,7 +53,7 @@ export function WhatsAppButton({
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0, opacity: 0 }}
       transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-      className="fixed bottom-6 right-6 z-40 pb-[env(safe-area-inset-bottom)]"
+      className="fixed bottom-6 left-6 z-40 pb-[env(safe-area-inset-bottom)]"
       aria-label="Floating Contact"
     >
       <a
@@ -70,7 +70,7 @@ export function WhatsAppButton({
         <MessageCircle className="w-7 h-7" />
 
         {/* Hover Tooltip on desktop */}
-        <span className="hidden md:group-hover:inline-block absolute right-16 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-semibold whitespace-nowrap shadow-lg transition-opacity duration-200">
+        <span className="hidden md:group-hover:inline-block absolute left-16 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-semibold whitespace-nowrap shadow-lg transition-opacity duration-200">
           Chat on WhatsApp
         </span>
       </a>
