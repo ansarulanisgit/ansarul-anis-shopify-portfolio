@@ -7,8 +7,10 @@ import { readSectionsFromStorage, writeSectionsToStorage, readSettingsFromStorag
 
 function revalidateAllCaches() {
   try {
-    revalidatePath('/');
-    revalidatePath('/?preview=draft');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin', 'layout');
+    revalidatePath('/admin/builder');
+    revalidatePath('/admin/settings');
     revalidateTag('site-data');
     revalidateTag('page-sections');
     revalidateTag('site-settings');

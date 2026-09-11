@@ -344,8 +344,10 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      revalidatePath('/');
-      revalidatePath('/?preview=draft');
+      revalidatePath('/', 'layout');
+      revalidatePath('/admin', 'layout');
+      revalidatePath('/admin/settings');
+      revalidatePath('/admin/builder');
       revalidateTag('site-settings');
       revalidateTag('site-data');
       revalidateTag('page-sections');

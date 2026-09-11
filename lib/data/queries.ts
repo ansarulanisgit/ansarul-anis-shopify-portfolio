@@ -29,7 +29,7 @@ function isSupabaseConfigured(): boolean {
   return Boolean(url && key && !url.includes('placeholder'));
 }
 
-export const getSiteSettings = cache(async (): Promise<SiteSettingsMap> => {
+export async function getSiteSettings(): Promise<SiteSettingsMap> {
   if (!isSupabaseConfigured()) {
     return readSettingsFromStorage();
   }
@@ -65,9 +65,9 @@ export const getSiteSettings = cache(async (): Promise<SiteSettingsMap> => {
     console.warn('Error fetching site_settings from Supabase, using fallback:', err);
     return readSettingsFromStorage();
   }
-});
+}
 
-export const getSeoMeta = cache(async (pageKey: string = 'home'): Promise<SeoMeta> => {
+export async function getSeoMeta(pageKey: string = 'home'): Promise<SeoMeta> {
   if (!isSupabaseConfigured()) {
     return defaultSeoMeta;
   }
@@ -88,9 +88,9 @@ export const getSeoMeta = cache(async (pageKey: string = 'home'): Promise<SeoMet
   } catch {
     return defaultSeoMeta;
   }
-});
+}
 
-export const getProjects = cache(async (publishedOnly: boolean = true): Promise<Project[]> => {
+export async function getProjects(publishedOnly: boolean = true): Promise<Project[]> {
   if (!isSupabaseConfigured()) {
     return publishedOnly
       ? defaultProjects.filter((p) => p.status === 'published').sort((a, b) => a.order_index - b.order_index)
@@ -119,9 +119,9 @@ export const getProjects = cache(async (publishedOnly: boolean = true): Promise<
   } catch {
     return defaultProjects;
   }
-});
+}
 
-export const getServices = cache(async (): Promise<Service[]> => {
+export async function getServices(): Promise<Service[]> {
   if (!isSupabaseConfigured()) {
     return defaultServices.sort((a, b) => a.order_index - b.order_index);
   }
@@ -141,9 +141,9 @@ export const getServices = cache(async (): Promise<Service[]> => {
   } catch {
     return defaultServices;
   }
-});
+}
 
-export const getTestimonials = cache(async (featuredOnly: boolean = true): Promise<Testimonial[]> => {
+export async function getTestimonials(featuredOnly: boolean = true): Promise<Testimonial[]> {
   if (!isSupabaseConfigured()) {
     return featuredOnly
       ? defaultTestimonials.filter((t) => t.featured).sort((a, b) => a.order_index - b.order_index)
@@ -168,9 +168,9 @@ export const getTestimonials = cache(async (featuredOnly: boolean = true): Promi
   } catch {
     return defaultTestimonials;
   }
-});
+}
 
-export const getFaqs = cache(async (): Promise<FAQ[]> => {
+export async function getFaqs(): Promise<FAQ[]> {
   if (!isSupabaseConfigured()) {
     return defaultFaqs.sort((a, b) => a.order_index - b.order_index);
   }
@@ -190,7 +190,7 @@ export const getFaqs = cache(async (): Promise<FAQ[]> => {
   } catch {
     return defaultFaqs;
   }
-});
+}
 
 export async function getLeads(): Promise<Lead[]> {
   if (!isSupabaseConfigured()) {
@@ -214,10 +214,10 @@ export async function getLeads(): Promise<Lead[]> {
   }
 }
 
-export const getPageSections = cache(async (
+export async function getPageSections(
   pageKey: string = 'home',
   includeDrafts: boolean = false
-): Promise<PageSection[]> => {
+): Promise<PageSection[]> {
   if (!isSupabaseConfigured()) {
     const all = readSectionsFromStorage(pageKey);
     return all
@@ -271,5 +271,5 @@ export const getPageSections = cache(async (
     const fallback = readSectionsFromStorage(pageKey);
     return fallback.filter((s) => s.page_key === pageKey);
   }
-});
+}
 

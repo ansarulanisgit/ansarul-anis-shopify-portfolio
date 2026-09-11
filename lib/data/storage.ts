@@ -56,30 +56,23 @@ function safeWriteFile(primaryFile: string, fallbackFile: string, content: strin
 }
 
 export function readSectionsFromStorage(pageKey: string = 'home'): PageSection[] {
-  // 1. In-memory cache first
-  if (memorySections && Array.isArray(memorySections) && memorySections.length > 0) {
-    return memorySections;
-  }
-
-  // 2. Check writable tmp storage (if written earlier in this serverless session)
+  // 1. Check writable tmp storage
   try {
     if (fs.existsSync(TMP_SECTIONS_FILE)) {
       const raw = fs.readFileSync(TMP_SECTIONS_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        memorySections = parsed;
         return parsed;
       }
     }
   } catch {}
 
-  // 3. Check bundled project data directory
+  // 2. Check bundled project data directory
   try {
     if (fs.existsSync(SECTIONS_FILE)) {
       const raw = fs.readFileSync(SECTIONS_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        memorySections = parsed;
         return parsed;
       }
     }
@@ -87,15 +80,11 @@ export function readSectionsFromStorage(pageKey: string = 'home'): PageSection[]
     console.error('Error reading sections from storage, falling back to defaults:', err);
   }
 
-  // 4. Return initial default sections (do not write to disk to prevent EROFS)
-  memorySections = initialDefaultSections;
+  // 3. Fallback to initial defaults
   return initialDefaultSections;
 }
 
 export function writeSectionsToStorage(sections: PageSection[]): void {
-  // Always update in-memory cache
-  memorySections = sections;
-
   try {
     const content = JSON.stringify(sections, null, 2);
     safeWriteFile(SECTIONS_FILE, TMP_SECTIONS_FILE, content);
@@ -105,40 +94,30 @@ export function writeSectionsToStorage(sections: PageSection[]): void {
 }
 
 export function readSettingsFromStorage(): SiteSettingsMap {
-  // 1. In-memory cache first
-  if (memorySettings && typeof memorySettings === 'object') {
-    return memorySettings;
-  }
-
-  // 2. Check writable tmp storage
+  // 1. Check writable tmp storage
   try {
     if (fs.existsSync(TMP_SETTINGS_FILE)) {
       const raw = fs.readFileSync(TMP_SETTINGS_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object') {
-        const result: SiteSettingsMap = { ...defaultSiteSettings, ...parsed };
-        memorySettings = result;
-        return result;
+        return { ...defaultSiteSettings, ...parsed };
       }
     }
   } catch {}
 
-  // 3. Check bundled project data directory
+  // 2. Check bundled project data directory
   try {
     if (fs.existsSync(SETTINGS_FILE)) {
       const raw = fs.readFileSync(SETTINGS_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object') {
-        const result: SiteSettingsMap = { ...defaultSiteSettings, ...parsed };
-        memorySettings = result;
-        return result;
+        return { ...defaultSiteSettings, ...parsed };
       }
     }
   } catch (err) {
     console.error('Error reading settings from storage, falling back to defaults:', err);
   }
 
-  memorySettings = defaultSiteSettings;
   return defaultSiteSettings;
 }
 
