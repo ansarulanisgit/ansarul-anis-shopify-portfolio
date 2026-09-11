@@ -72,6 +72,13 @@ export interface SectionSettings {
   nav_title?: string;
   connect_title?: string;
   back_to_top_text?: string;
+  exit_popup_enabled?: boolean;
+  exit_popup_eyebrow?: string;
+  exit_popup_title?: string;
+  exit_popup_subheading?: string;
+  exit_popup_whatsapp_label?: string;
+  exit_popup_whatsapp_tag?: string;
+  exit_popup_submit_label?: string;
   nav_links?: Array<{ label: string; href: string }>;
   show_filters?: boolean;
   quote_icon?: string;

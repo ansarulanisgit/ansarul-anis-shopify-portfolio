@@ -206,8 +206,8 @@ export async function POST(request: NextRequest) {
               }
             }
 
-            // Sync navigation section to site_settings general
-            if (sec.section_type === 'navigation') {
+            // Sync navigation & footer section to site_settings general
+            if (sec.section_type === 'navigation' || sec.section_type === 'footer' || sec.settings?.exit_popup_title) {
               try {
                 const s = sec.settings || {};
                 const { data: existingGen } = await supabase.from('site_settings').select('value').eq('key', 'general').maybeSingle();
@@ -218,11 +218,18 @@ export async function POST(request: NextRequest) {
                     ...existingVal,
                     ...(s.cta_label ? { nav_cta_label: s.cta_label } : {}),
                     ...(s.nav_links ? { nav_links: s.nav_links } : {}),
+                    ...(s.exit_popup_enabled !== undefined ? { exit_popup_enabled: s.exit_popup_enabled } : {}),
+                    ...(s.exit_popup_eyebrow ? { exit_popup_eyebrow: s.exit_popup_eyebrow } : {}),
+                    ...(s.exit_popup_title ? { exit_popup_title: s.exit_popup_title } : {}),
+                    ...(s.exit_popup_subheading ? { exit_popup_subheading: s.exit_popup_subheading } : {}),
+                    ...(s.exit_popup_whatsapp_label ? { exit_popup_whatsapp_label: s.exit_popup_whatsapp_label } : {}),
+                    ...(s.exit_popup_whatsapp_tag ? { exit_popup_whatsapp_tag: s.exit_popup_whatsapp_tag } : {}),
+                    ...(s.exit_popup_submit_label ? { exit_popup_submit_label: s.exit_popup_submit_label } : {}),
                   },
                   updated_at: new Date().toISOString(),
                 }, { onConflict: 'key' });
               } catch (navSyncErr) {
-                console.error('Error syncing navigation section:', navSyncErr);
+                console.error('Error syncing navigation/footer/popup section:', navSyncErr);
               }
             }
           }

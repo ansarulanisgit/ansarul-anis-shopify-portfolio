@@ -1,16 +1,19 @@
 'use client';
 
 import * as React from 'react';
-import { X, MessageCircle, Send, CheckCircle2, Sparkles, Clock, AlertCircle } from 'lucide-react';
+import { X, MessageCircle, Send, CheckCircle2, Sparkles, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { SiteSettingsMap } from '@/types/database.types';
 
 interface ExitIntentModalProps {
+  settings?: Partial<SiteSettingsMap>;
   whatsappNumber?: string;
   whatsappMessage?: string;
 }
 
 export function ExitIntentModal({
+  settings = {},
   whatsappNumber = '+8801709260934',
   whatsappMessage = "Hi Anis! I was about to leave your site and I'd like a free 15-minute Shopify audit & project quote.",
 }: ExitIntentModalProps) {
@@ -22,14 +25,25 @@ export function ExitIntentModal({
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
-  const encodedText = encodeURIComponent(whatsappMessage);
+  const isEnabled = settings.exit_popup_enabled !== false;
+  const eyebrow = settings.exit_popup_eyebrow || 'WAIT! BEFORE YOU GO';
+  const title = settings.exit_popup_title || "Let's Build Your Dream Shopify Store";
+  const subheading =
+    settings.exit_popup_subheading ||
+    'Get a Free 15-Minute Shopify Audit & Fixed Quote for your project. Reach out on WhatsApp or drop a quick line below!';
+  const whatsappLabel = settings.exit_popup_whatsapp_label || 'Chat on WhatsApp';
+  const whatsappTag = settings.exit_popup_whatsapp_tag || 'Under 20m reply';
+  const submitLabel = settings.exit_popup_submit_label || 'Get Free Audit & Quote';
+  const num = settings.whatsapp_number || whatsappNumber;
+  const msg = settings.whatsapp_message || whatsappMessage;
+
+  const cleanNumber = num.replace(/[^0-9]/g, '');
+  const encodedText = encodeURIComponent(msg);
   const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodedText}`;
 
   React.useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !isEnabled) return;
 
-    // Check if user has already contacted or dismissed
     const hasContacted = sessionStorage.getItem('anisshopify_user_contacted') === 'true';
     const isDismissed = sessionStorage.getItem('anisshopify_exit_modal_dismissed') === 'true';
 
@@ -37,7 +51,6 @@ export function ExitIntentModal({
 
     let hasTriggered = false;
 
-    // Desktop Exit Intent: Mouse leaves top of viewport
     const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY <= 15 && !hasTriggered) {
         hasTriggered = true;
@@ -45,7 +58,6 @@ export function ExitIntentModal({
       }
     };
 
-    // Mobile / Scroll Exit Intent: Mobile scroll up after deep scroll
     let lastScrollY = window.scrollY;
     const handleScroll = () => {
       const currentScroll = window.scrollY;
@@ -66,7 +78,7 @@ export function ExitIntentModal({
       document.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isEnabled]);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -127,58 +139,60 @@ export function ExitIntentModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !isEnabled) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-xs animate-in fade-in duration-250 select-none">
-      <div className="relative w-full max-w-lg sm:max-w-[612px] bg-card border border-border/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200 select-none">
+      <div className="relative w-full max-w-lg sm:max-w-[640px] bg-card border border-border/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
         {/* Top Accent Gradient Line */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-primary via-accent to-primary" />
+        <div className="h-1.5 w-full bg-gradient-to-r from-primary via-accent to-primary shrink-0" />
 
         {/* Close Button */}
         <button
           onClick={handleClose}
           aria-label="Close modal"
-          className="absolute top-4 right-4 z-20 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="absolute top-3.5 right-3.5 z-20 p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="p-6 sm:p-8 overflow-y-auto">
+        <div className="p-5 sm:p-7 overflow-y-auto space-y-4">
           {/* Header Hook */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-3 border border-primary/20">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider border border-primary/20">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Wait! Before You Go</span>
+              <span>{eyebrow}</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground mb-2 leading-snug">
-              Let&apos;s Build Your Dream Shopify Store
+            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground leading-snug">
+              {title}
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
-              Get a <strong className="text-foreground">Free 15-Minute Shopify Audit &amp; Fixed Quote</strong> for your project. Reach out on WhatsApp or drop a quick line below!
+              {subheading}
             </p>
           </div>
 
-          {/* Direct WhatsApp CTA Button */}
-          <div className="mb-6">
+          {/* Shorter, sleek WhatsApp button */}
+          <div className="flex justify-center pt-1">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleWhatsAppClick}
-              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-[0.99] group"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all active:scale-[0.98] group"
             >
-              <MessageCircle className="w-5 h-5" />
-              <span>Chat Instantly on WhatsApp</span>
-              <span className="text-[10px] font-normal opacity-80 bg-white/20 px-2 py-0.5 rounded-full ml-1">
-                Under 20m reply
-              </span>
+              <MessageCircle className="w-4 h-4" />
+              <span>{whatsappLabel}</span>
+              {whatsappTag && (
+                <span className="text-[10px] font-normal opacity-90 bg-white/20 px-2 py-0.5 rounded-full">
+                  {whatsappTag}
+                </span>
+              )}
             </a>
           </div>
 
-          <div className="relative flex py-2 items-center mb-6">
+          <div className="relative flex py-1 items-center">
             <div className="flex-grow border-t border-border/80" />
-            <span className="flex-shrink mx-3 text-[11px] uppercase font-bold text-muted-foreground/70 tracking-wider">
+            <span className="flex-shrink mx-3 text-[10px] uppercase font-bold text-muted-foreground/70 tracking-wider">
               Or Send Quick Message
             </span>
             <div className="flex-grow border-t border-border/80" />
@@ -186,63 +200,63 @@ export function ExitIntentModal({
 
           {/* Form Content / Success */}
           {isSubmitted ? (
-            <div className="py-6 flex flex-col items-center text-center space-y-3">
-              <div className="w-14 h-14 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
-                <CheckCircle2 className="w-7 h-7" />
+            <div className="py-4 flex flex-col items-center text-center space-y-2.5">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
+                <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-foreground">Message Sent Successfully!</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
-                Thank you! Ansarul Anis will review your request and reply to your email within 2 hours.
+              <h3 className="text-base font-bold text-foreground">Message Sent Successfully!</h3>
+              <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
+                Thank you! I will review your request and reply to your email within 2 hours.
               </p>
               <button
                 onClick={handleClose}
-                className="mt-2 px-5 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90"
+                className="mt-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90"
               >
                 Close Window
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            <form onSubmit={handleSubmit} className="space-y-3.5 text-left pb-1">
               {error && (
-                <div className="p-3 rounded-xl bg-destructive/10 text-destructive text-xs font-medium border border-destructive/20 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
+                <div className="p-2.5 rounded-xl bg-destructive/10 text-destructive text-xs font-medium border border-destructive/20 flex items-center gap-2">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">Your Name</label>
+                  <label className="text-[11px] font-semibold text-foreground">Your Name</label>
                   <Input
                     type="text"
                     placeholder="Sarah Jenkins"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="h-10 text-xs"
+                    className="h-9 text-xs"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">Your Email</label>
+                  <label className="text-[11px] font-semibold text-foreground">Your Email</label>
                   <Input
                     type="email"
                     placeholder="sarah@brand.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-10 text-xs"
+                    className="h-9 text-xs"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground">Project Details / Question</label>
+                <label className="text-[11px] font-semibold text-foreground">Project Details / Question</label>
                 <Textarea
                   placeholder="Tell me briefly about your Shopify store idea, redesign, or questions..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   required
-                  className="min-h-[80px] text-xs"
+                  className="min-h-[70px] text-xs"
                 />
               </div>
 
@@ -255,8 +269,8 @@ export function ExitIntentModal({
                   <span>Submitting request...</span>
                 ) : (
                   <>
-                    <span>Get Free Audit &amp; Quote</span>
-                    <Send className="w-4 h-4" />
+                    <span>{submitLabel}</span>
+                    <Send className="w-3.5 h-3.5" />
                   </>
                 )}
               </button>

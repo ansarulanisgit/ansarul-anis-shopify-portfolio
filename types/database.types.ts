@@ -478,4 +478,11 @@ export interface SiteSettingsMap {
   social_links: SocialLink[];
   trust_stats: TrustStat[];
   appearance: AppearanceSettings;
+  exit_popup_enabled?: boolean;
+  exit_popup_eyebrow?: string;
+  exit_popup_title?: string;
+  exit_popup_subheading?: string;
+  exit_popup_whatsapp_label?: string;
+  exit_popup_whatsapp_tag?: string;
+  exit_popup_submit_label?: string;
 }

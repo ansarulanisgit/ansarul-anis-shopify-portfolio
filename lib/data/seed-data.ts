@@ -35,6 +35,13 @@ export const defaultSiteSettings: SiteSettingsMap = {
   hero_graphic_url: '/images/shopify-dashboard.png',
   whatsapp_number: '+8801709260934',
   whatsapp_message: "Hi Anis! I visited AnisShopify and I'd like to discuss a Shopify project.",
+  exit_popup_enabled: true,
+  exit_popup_eyebrow: 'WAIT! BEFORE YOU GO',
+  exit_popup_title: "Let's Build Your Dream Shopify Store",
+  exit_popup_subheading: "Get a Free 15-Minute Shopify Audit & Fixed Quote for your project. Reach out on WhatsApp or drop a quick line below!",
+  exit_popup_whatsapp_label: 'Chat Instantly on WhatsApp',
+  exit_popup_whatsapp_tag: 'Under 20m reply',
+  exit_popup_submit_label: 'Get Free Audit & Quote',
   about_photo_url: '/images/ansarul-anis.jpg',
   about_text: [
     "I'm Ansarul Anis — a Shopify expert and young freelance developer who helps brands build Shopify stores that actually convert. From Shopify store design to full Shopify website development, I engineer every pixel for revenue.",

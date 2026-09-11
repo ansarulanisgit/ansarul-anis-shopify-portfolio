@@ -63,9 +63,9 @@ export function Footer({
   };
 
   return (
-    <footer className="w-full border-t border-border/80 bg-card py-12 sm:py-16 text-card-foreground">
+    <footer className="w-full border-t border-border/80 bg-card pt-12 sm:pt-16 pb-6 text-card-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
           <div className="md:col-span-2 space-y-4">
             <Link href="#home" className="flex items-center gap-2 text-xl font-bold tracking-tight">
@@ -116,7 +116,7 @@ export function Footer({
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-base text-muted-foreground font-medium">
+        <div className="pt-6 pb-2 border-t border-border/60 flex items-center justify-center text-center text-base text-muted-foreground font-medium">
           <div>
             {sectionSettings?.copyright_text ? (
               sectionSettings.copyright_text

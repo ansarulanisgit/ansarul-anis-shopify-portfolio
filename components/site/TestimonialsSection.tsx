@@ -127,7 +127,7 @@ export function TestimonialsSection({ testimonials = [], sectionSettings }: Test
 
         {/* Carousel Container */}
         <div
-          className="relative max-w-6xl mx-auto select-none px-6 sm:px-14"
+          className="relative max-w-6xl mx-auto select-none px-0 sm:px-14"
           style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
           onMouseEnter={() => { if (pauseOnHover) setIsPaused(true); }}
           onMouseLeave={onMouseLeave}
@@ -198,22 +198,22 @@ export function TestimonialsSection({ testimonials = [], sectionSettings }: Test
             </div>
           </div>
 
-          {/* Center Side Arrow Buttons */}
+          {/* Center Side Arrow Buttons - Hidden on Mobile */}
           {hasMultipleSlides && (
             <>
               <button
                 onClick={handlePrev}
                 aria-label="Previous slide"
-                className="absolute -left-2 sm:left-1 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 hover:scale-110 transition-all active:scale-95 flex items-center justify-center"
+                className="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 hover:scale-110 transition-all active:scale-95 items-center justify-center"
               >
-                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={handleNext}
                 aria-label="Next slide"
-                className="absolute -right-2 sm:right-1 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 hover:scale-110 transition-all active:scale-95 flex items-center justify-center"
+                className="hidden sm:flex absolute right-1 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 hover:scale-110 transition-all active:scale-95 items-center justify-center"
               >
-                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ChevronRight className="w-5 h-5" />
               </button>
             </>
           )}

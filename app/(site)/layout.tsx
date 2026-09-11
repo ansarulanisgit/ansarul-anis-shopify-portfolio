@@ -22,6 +22,7 @@ export default async function SiteLayout({
       />
       <BackToTopButton />
       <ExitIntentModal
+        settings={settings}
         whatsappNumber={settings.whatsapp_number}
         whatsappMessage={settings.whatsapp_message}
       />
