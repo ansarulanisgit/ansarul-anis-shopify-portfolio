@@ -1322,47 +1322,202 @@ export default function AdminSettingsPage() {
             </button>
           </div>
 
-          {/* Email Notification Settings & Test */}
-          <div className="pt-6 border-t border-border space-y-4">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Mail className="w-4 h-4 text-primary" />
-              <span>Lead Email Notification &amp; Delivery Test</span>
-            </h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              When clients submit inquiries through the contact form, notifications are saved to your Leads Inbox and dispatched to <span className="font-semibold text-foreground">ansarul.contact@gmail.com</span>.
-            </p>
+          {/* Email Notification Settings & Receiver Address */}
+          <div className="pt-6 border-t border-border space-y-5">
+            <div>
+              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Mail className="w-4 h-4 text-primary" />
+                <span>Lead Email Notification &amp; Delivery Settings</span>
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                Configure your receiver inbox address and email service credentials to get instant notifications when clients submit form inquiries.
+              </p>
+            </div>
 
-            <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-3">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div>
-                  <div className="text-xs font-bold text-foreground">Test Email Dispatch</div>
-                  <div className="text-[11px] text-muted-foreground">Sends a live test notification to ansarul.contact@gmail.com</div>
+            {/* 1. Receiver Email Address */}
+            <div className="p-4 rounded-xl bg-muted/30 border border-border/80 space-y-2">
+              <label className="text-xs font-semibold text-foreground block">
+                Notification Receiver Email Address *
+              </label>
+              <Input
+                type="email"
+                value={settings.notification_email || 'ansarul.contact@gmail.com'}
+                onChange={(e) => setSettings({ ...settings, notification_email: e.target.value })}
+                placeholder="ansarul.contact@gmail.com"
+                className="text-xs"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                You can change this email address anytime. All new client form inquiries will be sent directly to this mailbox.
+              </p>
+            </div>
+
+            {/* 2. Email Provider Credentials */}
+            <div className="p-5 rounded-xl bg-card border border-border/80 shadow-2xs space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                  Email Sending Provider (SMTP / Resend)
+                </h4>
+                <div className="flex rounded-lg bg-muted p-0.5 text-xs font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => setSettings({ ...settings, email_provider: 'smtp' })}
+                    className={`px-3 py-1 rounded-md transition-all ${
+                      (settings.email_provider || 'smtp') === 'smtp'
+                        ? 'bg-background text-foreground shadow-2xs font-bold'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    Gmail / Custom SMTP
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSettings({ ...settings, email_provider: 'resend' })}
+                    className={`px-3 py-1 rounded-md transition-all ${
+                      settings.email_provider === 'resend'
+                        ? 'bg-background text-foreground shadow-2xs font-bold'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    Resend API
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setIsSaving(true);
-                    try {
-                      const res = await fetch('/api/test-email', { method: 'POST' });
-                      const json = await res.json();
-                      if (json.success) {
-                        showNotification(`✅ ${json.message}`);
-                      } else {
-                        showNotification(`❌ ${json.error}`);
-                      }
-                    } catch (err: any) {
-                      showNotification(`❌ Error: ${err.message}`);
-                    } finally {
-                      setIsSaving(false);
-                    }
-                  }}
-                  disabled={isSaving}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-xs hover:bg-primary/90 transition-all disabled:opacity-50"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{isSaving ? 'Testing...' : 'Send Test Email'}</span>
-                </button>
               </div>
+
+              {(settings.email_provider || 'smtp') === 'smtp' ? (
+                <div className="space-y-3 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-foreground">SMTP Sender Email (Your Gmail)</label>
+                      <Input
+                        type="email"
+                        value={settings.smtp_user || ''}
+                        onChange={(e) => setSettings({ ...settings, smtp_user: e.target.value })}
+                        placeholder="ansarul.contact@gmail.com"
+                        className="text-xs"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-foreground">Gmail 16-Letter App Password *</label>
+                      <Input
+                        type="password"
+                        value={settings.smtp_pass || ''}
+                        onChange={(e) => setSettings({ ...settings, smtp_pass: e.target.value })}
+                        placeholder="abcd efgh ijkl mnop"
+                        className="text-xs"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-foreground">SMTP Host</label>
+                      <Input
+                        value={settings.smtp_host || 'smtp.gmail.com'}
+                        onChange={(e) => setSettings({ ...settings, smtp_host: e.target.value })}
+                        placeholder="smtp.gmail.com"
+                        className="text-xs font-mono"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-foreground">SMTP Port</label>
+                      <Input
+                        value={settings.smtp_port || 465}
+                        onChange={(e) => setSettings({ ...settings, smtp_port: e.target.value })}
+                        placeholder="465"
+                        className="text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Gmail App Password Step Guide */}
+                  <div className="p-3.5 rounded-lg bg-primary/5 border border-primary/20 text-xs space-y-1.5">
+                    <div className="font-bold text-foreground flex items-center gap-1.5">
+                      <span>🔑 Quick 1-Minute Guide for Gmail App Password:</span>
+                    </div>
+                    <ol className="list-decimal list-inside text-muted-foreground text-[11px] space-y-1 leading-relaxed">
+                      <li>Go to Google Account Security: <a href="https://myaccount.google.com/security" target="_blank" rel="noreferrer" className="text-primary underline">myaccount.google.com/security</a></li>
+                      <li>Turn ON 2-Step Verification if not already enabled.</li>
+                      <li>Search &apos;App Passwords&apos; at the bottom of Security page.</li>
+                      <li>Create an App Password for &apos;Mail&apos; and paste the 16 letters into the password box above.</li>
+                    </ol>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2 pt-1">
+                  <label className="text-[11px] font-semibold text-foreground">Resend API Key (starts with re_)</label>
+                  <Input
+                    type="password"
+                    value={settings.resend_api_key || ''}
+                    onChange={(e) => setSettings({ ...settings, resend_api_key: e.target.value })}
+                    placeholder="re_123456789..."
+                    className="text-xs font-mono"
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    Get a free API key from <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-primary underline">resend.com</a> (Includes 3,000 free emails/month).
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Actions: Save Settings & Send Live Test */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() =>
+                  saveTabSettings('contact', {
+                    whatsapp_number: settings.whatsapp_number,
+                    whatsapp_message: settings.whatsapp_message,
+                    notification_email: settings.notification_email,
+                    email_provider: settings.email_provider,
+                    smtp_host: settings.smtp_host,
+                    smtp_port: settings.smtp_port,
+                    smtp_user: settings.smtp_user,
+                    smtp_pass: settings.smtp_pass,
+                    resend_api_key: settings.resend_api_key,
+                  })
+                }
+                disabled={isSaving}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent-800 text-white hover:bg-accent-700 dark:bg-primary dark:text-primary-foreground text-xs font-semibold shadow-xs"
+              >
+                <Save className="w-4 h-4" />
+                <span>{isSaving ? 'Saving...' : 'Save Email & Contact Settings'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  setIsSaving(true);
+                  try {
+                    const res = await fetch('/api/test-email', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        notification_email: settings.notification_email,
+                        resend_api_key: settings.resend_api_key,
+                        smtp_user: settings.smtp_user,
+                        smtp_pass: settings.smtp_pass,
+                        smtp_host: settings.smtp_host,
+                        smtp_port: settings.smtp_port,
+                      }),
+                    });
+                    const json = await res.json();
+                    if (json.success) {
+                      showNotification(`✅ ${json.message}`);
+                    } else {
+                      showNotification(`❌ ${json.error}`);
+                    }
+                  } catch (err: any) {
+                    showNotification(`❌ Error: ${err.message}`);
+                  } finally {
+                    setIsSaving(false);
+                  }
+                }}
+                disabled={isSaving}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-all disabled:opacity-50"
+              >
+                <Send className="w-4 h-4" />
+                <span>{isSaving ? 'Sending Test...' : 'Send Live Test Email'}</span>
+              </button>
             </div>
           </div>
         </div>

@@ -127,19 +127,40 @@ ${message}
   `.trim();
 }
 
+export interface DynamicEmailConfig {
+  notification_email?: string;
+  resend_api_key?: string;
+  smtp_user?: string;
+  smtp_pass?: string;
+  smtp_host?: string;
+  smtp_port?: number | string;
+}
+
 /**
  * Fast, non-blocking email dispatcher.
  * Attempts Resend API first if configured, then Nodemailer SMTP if configured.
  */
-export async function sendLeadEmail(data: LeadEmailData): Promise<{ success: boolean; method?: string; error?: any }> {
-  const recipient = process.env.CONTACT_NOTIFICATION_EMAIL || 'ansarul.contact@gmail.com';
+export async function sendLeadEmail(
+  data: LeadEmailData,
+  config?: DynamicEmailConfig
+): Promise<{ success: boolean; method?: string; error?: any }> {
+  const recipient =
+    config?.notification_email ||
+    process.env.CONTACT_NOTIFICATION_EMAIL ||
+    'ansarul.contact@gmail.com';
+
+  const resendApiKey = config?.resend_api_key || process.env.RESEND_API_KEY;
+  const smtpUser = config?.smtp_user || process.env.SMTP_USER;
+  const smtpPass = config?.smtp_pass || process.env.SMTP_PASS;
+  const smtpHost = config?.smtp_host || process.env.SMTP_HOST || 'smtp.gmail.com';
+  const smtpPort = Number(config?.smtp_port || process.env.SMTP_PORT) || 465;
+
   const emailHtml = generateLeadEmailHtml(data);
   const emailSubject = `⚡ New Lead: ${data.subject} (${data.name})`;
 
   let lastError: string | null = null;
 
   // Method 1: Resend API (Lightning fast REST API)
-  const resendApiKey = process.env.RESEND_API_KEY;
   if (resendApiKey && resendApiKey.startsWith('re_')) {
     try {
       const res = await fetch('https://api.resend.com/emails', {
@@ -172,11 +193,6 @@ export async function sendLeadEmail(data: LeadEmailData): Promise<{ success: boo
   }
 
   // Method 2: Nodemailer SMTP (e.g. Gmail App Password or SMTP relay)
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const smtpPort = Number(process.env.SMTP_PORT) || 465;
-
   if (smtpUser && smtpPass) {
     try {
       const transporter = nodemailer.createTransport({
@@ -206,7 +222,9 @@ export async function sendLeadEmail(data: LeadEmailData): Promise<{ success: boo
     }
   }
 
-  const noCredsMsg = lastError || 'Neither RESEND_API_KEY nor (SMTP_USER + SMTP_PASS) is configured in environment variables.';
+  const noCredsMsg =
+    lastError ||
+    'Neither Resend API Key nor (SMTP User + Password) is configured in your Site Settings or environment variables.';
   console.log(`[Email Dispatch Log] Destination: ${recipient} | Status: ${noCredsMsg}`);
   return { success: false, method: 'none', error: noCredsMsg };
 }

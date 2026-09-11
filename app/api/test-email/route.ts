@@ -1,19 +1,29 @@
 import { NextResponse } from 'next/server';
 import { sendLeadEmail } from '@/lib/email/sender';
+import { getSiteSettings } from '@/lib/data/queries';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const targetEmail = body.email || process.env.CONTACT_NOTIFICATION_EMAIL || 'ansarul.contact@gmail.com';
+    const siteSettings = await getSiteSettings();
+    const activeConfig = { ...siteSettings, ...body };
 
-    const result = await sendLeadEmail({
-      name: 'Diagnostic Test',
-      email: targetEmail,
-      subject: 'Test Lead Notification',
-      message: 'This is a test email sent from your Shopify Portfolio Admin Dashboard to verify email delivery.',
-      project_type: 'System Test',
-      budget_range: 'N/A',
-    });
+    const targetEmail =
+      activeConfig.notification_email ||
+      process.env.CONTACT_NOTIFICATION_EMAIL ||
+      'ansarul.contact@gmail.com';
+
+    const result = await sendLeadEmail(
+      {
+        name: 'Diagnostic Test',
+        email: targetEmail,
+        subject: 'Test Lead Notification',
+        message: 'This is a test email sent from your Shopify Portfolio Admin Dashboard to verify email delivery.',
+        project_type: 'System Test',
+        budget_range: 'N/A',
+      },
+      activeConfig
+    );
 
     if (result.success) {
       return NextResponse.json({
@@ -25,11 +35,11 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          error: result.error || 'No email service credentials configured in .env.local',
+          error: result.error || 'Email dispatch failed. Please check your SMTP or Resend credentials in Site Settings.',
           details: {
-            hasResendKey: Boolean(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_')),
-            hasSmtpCreds: Boolean(process.env.SMTP_USER && process.env.SMTP_PASS),
             targetEmail,
+            hasResendKey: Boolean(activeConfig.resend_api_key && activeConfig.resend_api_key.startsWith('re_')),
+            hasSmtpCreds: Boolean(activeConfig.smtp_user && activeConfig.smtp_pass),
           },
         },
         { status: 400 }

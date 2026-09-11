@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/lib/supabase/server';
 import { sendLeadEmail } from '@/lib/email/sender';
+import { getSiteSettings } from '@/lib/data/queries';
 import * as z from 'zod';
 
 const contactSchema = z.object({
@@ -83,18 +84,25 @@ export async function POST(request: Request) {
       }
     }
 
-    // 2. High-speed, non-blocking email dispatch to ansarul.contact@gmail.com
+    // 2. High-speed, non-blocking email dispatch to receiver address
     // Dispatched in background so the user gets instant form response without waiting for SMTP/API roundtrips
-    sendLeadEmail({
-      name,
-      email,
-      subject,
-      message,
-      project_type,
-      budget_range,
-    }).catch((emailErr) => {
-      console.warn('Lead email notification background delivery warning:', emailErr);
-    });
+    getSiteSettings()
+      .then((siteSettings) => {
+        return sendLeadEmail(
+          {
+            name,
+            email,
+            subject,
+            message,
+            project_type,
+            budget_range,
+          },
+          siteSettings
+        );
+      })
+      .catch((emailErr) => {
+        console.warn('Lead email notification background delivery warning:', emailErr);
+      });
 
     return NextResponse.json({
       success: true,
