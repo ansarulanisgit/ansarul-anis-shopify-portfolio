@@ -1356,6 +1356,7 @@ export function SectionEditorDrawer({
                             Display Triggers & Conditions
                           </span>
 
+                          {/* 1. Exit Intent */}
                           <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
                             <span>1. Exit Intent (Mouseleave Top / Mobile Back-Scroll)</span>
                             <input
@@ -1366,6 +1367,7 @@ export function SectionEditorDrawer({
                             />
                           </label>
 
+                          {/* 2. Scroll Depth */}
                           <div className="space-y-2 pt-1 border-t border-border/40">
                             <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
                               <span>2. Scroll Depth Trigger</span>
@@ -1391,6 +1393,7 @@ export function SectionEditorDrawer({
                             )}
                           </div>
 
+                          {/* 3. Time Delay */}
                           <div className="space-y-2 pt-1 border-t border-border/40">
                             <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
                               <span>3. Time Delay Trigger</span>
@@ -1414,6 +1417,48 @@ export function SectionEditorDrawer({
                                 <span className="text-xs text-muted-foreground">seconds</span>
                               </div>
                             )}
+                          </div>
+
+                          {/* 4. Scroll Near Bottom / Footer */}
+                          <div className="space-y-2 pt-1 border-t border-border/40">
+                            <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
+                              <span>4. Near Bottom / Footer Scroll</span>
+                              <input
+                                type="checkbox"
+                                checked={Boolean(settings.exit_popup_trigger_bottom_enabled)}
+                                onChange={(e) => updateSetting('exit_popup_trigger_bottom_enabled', e.target.checked)}
+                                className="w-4 h-4 rounded text-primary"
+                              />
+                            </label>
+                            {Boolean(settings.exit_popup_trigger_bottom_enabled) && (
+                              <div className="flex items-center gap-2 pl-4">
+                                <span className="text-xs text-muted-foreground">Trigger when scrolled:</span>
+                                <Input
+                                  type="number"
+                                  value={settings.exit_popup_bottom_percent ?? 85}
+                                  onChange={(e) => updateSetting('exit_popup_bottom_percent', parseInt(e.target.value) || 0)}
+                                  className="w-24 h-8 text-xs"
+                                  placeholder="85"
+                                />
+                                <span className="text-xs text-muted-foreground">% of page height</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* 5. Frequency Control */}
+                          <div className="pt-1 border-t border-border/40">
+                            <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
+                              <div>
+                                <div>5. Show Once Per Session</div>
+                                <div className="text-[10px] font-normal text-muted-foreground">When ON, popup is shown max 1 time per browser session once dismissed</div>
+                              </div>
+                              <input
+                                type="checkbox"
+                                checked={settings.exit_popup_show_once_per_session !== false}
+                                onChange={(e) => updateSetting('exit_popup_show_once_per_session', e.target.checked)}
+                                className="w-4 h-4 rounded text-primary"
+                              />
+                            </label>
                           </div>
 
                           {/* Live Preview Button */}

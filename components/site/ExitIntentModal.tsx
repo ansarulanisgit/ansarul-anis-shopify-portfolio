@@ -43,6 +43,9 @@ export function ExitIntentModal({
   const scrollPx = Number(settings.exit_popup_scroll_px ?? 600);
   const triggerDelayEnabled = Boolean(settings.exit_popup_trigger_delay_enabled);
   const delaySec = Number(settings.exit_popup_delay_sec ?? 30);
+  const triggerBottomEnabled = Boolean(settings.exit_popup_trigger_bottom_enabled);
+  const bottomPercent = Number(settings.exit_popup_bottom_percent ?? 85);
+  const showOncePerSession = settings.exit_popup_show_once_per_session !== false;
   const isPreviewOpen = Boolean(settings.exit_popup_preview_open);
 
   const cleanNumber = num.replace(/[^0-9]/g, '');
@@ -58,8 +61,12 @@ export function ExitIntentModal({
 
     if (typeof window === 'undefined' || !isEnabled) return;
 
+    const storageKey = showOncePerSession
+      ? 'anisshopify_exit_modal_dismissed_session'
+      : 'anisshopify_exit_modal_dismissed_page';
+
     const hasContacted = sessionStorage.getItem('anisshopify_user_contacted') === 'true';
-    const isDismissed = sessionStorage.getItem('anisshopify_exit_modal_dismissed') === 'true';
+    const isDismissed = sessionStorage.getItem(storageKey) === 'true';
 
     if (hasContacted || isDismissed) return;
 
@@ -79,19 +86,30 @@ export function ExitIntentModal({
       }
     };
 
-    // 2. Scroll Depth (scroll_px threshold or mobile back-scroll fallback)
+    // 2. Scroll Depth & Near Bottom / Mobile Back-Scroll
     let lastScrollY = window.scrollY;
     const handleScroll = () => {
       const currentScroll = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 
+      // Scroll Depth Threshold (px)
       if (triggerScrollEnabled && scrollPx > 0 && currentScroll >= scrollPx) {
         triggerModal();
-      } else if (triggerExitIntent) {
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        if (docHeight > 0 && currentScroll / docHeight > 0.45 && lastScrollY - currentScroll > 150) {
+      }
+
+      // Scroll Near Bottom / Footer (%)
+      if (triggerBottomEnabled && docHeight > 0) {
+        const scrolledPct = (currentScroll / docHeight) * 100;
+        if (scrolledPct >= bottomPercent) {
           triggerModal();
         }
       }
+
+      // Exit Intent Fallback for back-scroll on mobile
+      if (triggerExitIntent && docHeight > 0 && currentScroll / docHeight > 0.45 && lastScrollY - currentScroll > 150) {
+        triggerModal();
+      }
+
       lastScrollY = currentScroll;
     };
 
@@ -106,7 +124,7 @@ export function ExitIntentModal({
     if (triggerExitIntent) {
       document.addEventListener('mouseleave', handleMouseLeave);
     }
-    if (triggerExitIntent || (triggerScrollEnabled && scrollPx > 0)) {
+    if (triggerExitIntent || triggerBottomEnabled || (triggerScrollEnabled && scrollPx > 0)) {
       window.addEventListener('scroll', handleScroll, { passive: true });
     }
 
@@ -124,12 +142,18 @@ export function ExitIntentModal({
     scrollPx,
     triggerDelayEnabled,
     delaySec,
+    triggerBottomEnabled,
+    bottomPercent,
+    showOncePerSession,
     isPreviewOpen,
   ]);
 
   const handleClose = () => {
     setIsOpen(false);
-    sessionStorage.setItem('anisshopify_exit_modal_dismissed', 'true');
+    const storageKey = showOncePerSession
+      ? 'anisshopify_exit_modal_dismissed_session'
+      : 'anisshopify_exit_modal_dismissed_page';
+    sessionStorage.setItem(storageKey, 'true');
   };
 
   const handleWhatsAppClick = async () => {

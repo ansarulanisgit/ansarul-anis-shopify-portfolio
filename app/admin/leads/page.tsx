@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   CheckCircle2,
+  Trash2,
 } from 'lucide-react';
 import { Lead, LeadStatus, LeadSource } from '@/types/database.types';
 import { defaultLeads } from '@/lib/data/seed-data';
@@ -26,6 +27,7 @@ export default function AdminLeadsPage() {
   const [statusFilter, setStatusFilter] = React.useState<string>('all');
   const [sourceFilter, setSourceFilter] = React.useState<string>('all');
   const [expandedLeadId, setExpandedLeadId] = React.useState<string | null>(null);
+  const [selectedLeadIds, setSelectedLeadIds] = React.useState<string[]>([]);
   const [notification, setNotification] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -46,7 +48,7 @@ export default function AdminLeadsPage() {
     }
     loadLeads();
 
-    // Supabase Realtime listener for incoming leads
+    // Supabase Realtime listener for incoming & deleted leads
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     if (!url || url.includes('placeholder')) return;
 
@@ -61,6 +63,16 @@ export default function AdminLeadsPage() {
             if (payload.new) {
               setLeads((prev) => [payload.new as Lead, ...prev]);
               showNotification(`⚡ New lead received from ${payload.new.name}!`);
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: 'DELETE', schema: 'public', table: 'leads' },
+          (payload: any) => {
+            if (payload.old && payload.old.id) {
+              setLeads((prev) => prev.filter((l) => l.id !== payload.old.id));
+              setSelectedLeadIds((prev) => prev.filter((id) => id !== payload.old.id));
             }
           }
         )
@@ -91,6 +103,42 @@ export default function AdminLeadsPage() {
     }
   };
 
+  const handleDeleteLead = async (leadId: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to delete lead from "${name}"?`)) return;
+
+    // Real-time optimistic update
+    setLeads((prev) => prev.filter((l) => l.id !== leadId));
+    setSelectedLeadIds((prev) => prev.filter((id) => id !== leadId));
+    if (expandedLeadId === leadId) setExpandedLeadId(null);
+    showNotification(`🗑️ Lead from "${name}" deleted in real time.`);
+
+    try {
+      const supabase = createClient();
+      await (supabase.from('leads') as any).delete().eq('id', leadId);
+      await fetch(`/api/leads?id=${leadId}`, { method: 'DELETE' });
+    } catch {
+      // Non-blocking
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedLeadIds.length === 0) return;
+    if (!window.confirm(`Are you sure you want to delete ${selectedLeadIds.length} selected lead(s)?`)) return;
+
+    const idsToDelete = [...selectedLeadIds];
+    setLeads((prev) => prev.filter((l) => !idsToDelete.includes(l.id)));
+    setSelectedLeadIds([]);
+    showNotification(`🗑️ ${idsToDelete.length} lead(s) deleted in real time.`);
+
+    try {
+      const supabase = createClient();
+      await (supabase.from('leads') as any).delete().in('id', idsToDelete);
+      await fetch(`/api/leads?ids=${idsToDelete.join(',')}`, { method: 'DELETE' });
+    } catch {
+      // Non-blocking
+    }
+  };
+
   // Filter & Search Logic
   const filteredLeads = leads.filter((lead) => {
     const matchesSearch =
@@ -104,6 +152,26 @@ export default function AdminLeadsPage() {
     return matchesSearch && matchesStatus && matchesSource;
   });
 
+  const allFilteredSelected =
+    filteredLeads.length > 0 &&
+    filteredLeads.every((l) => selectedLeadIds.includes(l.id));
+
+  const toggleSelectAll = () => {
+    if (allFilteredSelected) {
+      const filteredIds = new Set(filteredLeads.map((l) => l.id));
+      setSelectedLeadIds((prev) => prev.filter((id) => !filteredIds.has(id)));
+    } else {
+      const newSelected = new Set([...selectedLeadIds, ...filteredLeads.map((l) => l.id)]);
+      setSelectedLeadIds(Array.from(newSelected));
+    }
+  };
+
+  const toggleSelectLead = (id: string) => {
+    setSelectedLeadIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
   // Summary statistics
   const emailLeadsCount = leads.filter((l) => l.source === 'email_form').length;
   const whatsappLeadsCount = leads.filter((l) => l.source === 'whatsapp').length;
@@ -112,15 +180,28 @@ export default function AdminLeadsPage() {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Leads Inbox</h1>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          Review inquiries captured from your portfolio contact form and WhatsApp click-throughs.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Leads Inbox</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            Review and manage inquiries captured from your portfolio contact form and WhatsApp click-throughs.
+          </p>
+        </div>
+
+        {selectedLeadIds.length > 0 && (
+          <button
+            type="button"
+            onClick={handleDeleteSelected}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-destructive text-destructive-foreground font-semibold text-xs shadow-sm hover:bg-destructive/90 transition-all active:scale-[0.98]"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Delete Selected ({selectedLeadIds.length})</span>
+          </button>
+        )}
       </div>
 
       {notification && (
-        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold animate-in fade-in">
           {notification}
         </div>
       )}
@@ -208,6 +289,22 @@ export default function AdminLeadsPage() {
 
       {/* Leads Table */}
       <div className="bg-card rounded-2xl border border-border/80 shadow-xs overflow-hidden">
+        {/* Table Sub-header with Select All option */}
+        {filteredLeads.length > 0 && (
+          <div className="px-5 py-3 bg-muted/40 border-b border-border/60 flex items-center justify-between text-xs text-muted-foreground font-semibold">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={allFilteredSelected}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 rounded text-primary border-border focus:ring-primary"
+              />
+              <span>Select All ({filteredLeads.length})</span>
+            </label>
+            <span>Actions</span>
+          </div>
+        )}
+
         {filteredLeads.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground text-sm">
             No leads match your current search and filter criteria.
@@ -216,6 +313,7 @@ export default function AdminLeadsPage() {
           <div className="divide-y divide-border/60">
             {filteredLeads.map((lead) => {
               const isExpanded = expandedLeadId === lead.id;
+              const isSelected = selectedLeadIds.includes(lead.id);
 
               // Parse out subject if stored as [Subject: ...]
               const hasSubjectTag = lead.message.startsWith('[Subject: ');
@@ -227,13 +325,23 @@ export default function AdminLeadsPage() {
                 : lead.message;
 
               return (
-                <div key={lead.id} className="transition-colors hover:bg-muted/20">
+                <div key={lead.id} className={`transition-colors ${isSelected ? 'bg-primary/5' : 'hover:bg-muted/20'}`}>
                   {/* Row Summary */}
                   <div
                     onClick={() => setExpandedLeadId(isExpanded ? null : lead.id)}
                     className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
                   >
                     <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                      {/* Checkbox */}
+                      <div onClick={(e) => e.stopPropagation()} className="pt-1 sm:pt-0 shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleSelectLead(lead.id)}
+                          className="w-4 h-4 rounded text-primary border-border cursor-pointer"
+                        />
+                      </div>
+
                       <div className="p-2.5 rounded-xl bg-muted text-foreground shrink-0 mt-1 sm:mt-0">
                         {lead.source === 'whatsapp' ? (
                           <MessageCircle className="w-4 h-4 text-emerald-500" />
@@ -285,6 +393,16 @@ export default function AdminLeadsPage() {
                         {formatTimeAgo(lead.created_at)}
                       </div>
 
+                      {/* Real-time Delete Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteLead(lead.id, lead.name)}
+                        title="Delete Lead"
+                        className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+
                       <button
                         type="button"
                         onClick={() => setExpandedLeadId(isExpanded ? null : lead.id)}
@@ -308,7 +426,7 @@ export default function AdminLeadsPage() {
                       <div className="p-4 rounded-xl bg-card border border-border text-foreground/90 whitespace-pre-wrap leading-relaxed">
                         {displayMessage}
                       </div>
-                      <div className="mt-4 flex gap-3">
+                      <div className="mt-4 flex items-center justify-between">
                         <a
                           href={`mailto:${lead.email}?subject=${encodeURIComponent('Re: ' + (subjectLine || 'Your Shopify project inquiry'))}`}
                           className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-accent-800 text-white dark:bg-primary dark:text-primary-foreground font-semibold text-xs shadow-xs"
@@ -316,6 +434,15 @@ export default function AdminLeadsPage() {
                           <Mail className="w-3.5 h-3.5" />
                           <span>Reply via Email</span>
                         </a>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteLead(lead.id, lead.name)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-destructive hover:bg-destructive/10 border border-destructive/20 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete Lead</span>
+                        </button>
                       </div>
                     </div>
                   )}

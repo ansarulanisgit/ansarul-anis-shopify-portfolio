@@ -348,6 +348,9 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
       exit_popup_scroll_px: 600,
       exit_popup_trigger_delay_enabled: false,
       exit_popup_delay_sec: 30,
+      exit_popup_trigger_bottom_enabled: false,
+      exit_popup_bottom_percent: 85,
+      exit_popup_show_once_per_session: true,
     },
   },
   cta: {

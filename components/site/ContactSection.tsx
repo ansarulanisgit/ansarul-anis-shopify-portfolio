@@ -16,8 +16,8 @@ const contactSchema = z.object({
   name: z.string().min(2, 'Please enter your name'),
   email: z.string().email('Please enter a valid email address'),
   subject: z.string().min(2, 'Please enter a subject'),
-  budget_range: z.string().min(1, 'Please select your budget range'),
-  project_type: z.string().min(1, 'Please select a project type'),
+  budget_range: z.string().optional(),
+  project_type: z.string().optional(),
   message: z.string().min(10, 'Please enter your message (minimum 10 characters)'),
   honeypot: z.string().max(0, 'Spam detected').optional(),
 });

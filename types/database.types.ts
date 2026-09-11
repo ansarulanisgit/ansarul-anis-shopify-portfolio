@@ -486,6 +486,15 @@ export interface SiteSettingsMap {
   exit_popup_whatsapp_label?: string;
   exit_popup_whatsapp_tag?: string;
   exit_popup_submit_label?: string;
+  exit_popup_trigger_exit_intent?: boolean;
+  exit_popup_trigger_scroll_enabled?: boolean;
+  exit_popup_scroll_px?: number;
+  exit_popup_trigger_delay_enabled?: boolean;
+  exit_popup_delay_sec?: number;
+  exit_popup_trigger_bottom_enabled?: boolean;
+  exit_popup_bottom_percent?: number;
+  exit_popup_show_once_per_session?: boolean;
+  exit_popup_preview_open?: boolean;
   notification_email?: string;
   email_sender_name?: string;
   email_subject_template?: string;
