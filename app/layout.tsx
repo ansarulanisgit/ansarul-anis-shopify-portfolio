@@ -71,7 +71,10 @@ export default async function RootLayout({
       className={`${jakarta.variable} ${outfit.variable} ${inter.variable} ${spaceGrotesk.variable} ${syne.variable}`}
     >
       <head />
-      <body className="min-h-screen bg-background font-sans antialiased text-foreground">
+      <body
+        className="min-h-screen bg-background font-sans antialiased text-foreground"
+        suppressHydrationWarning
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

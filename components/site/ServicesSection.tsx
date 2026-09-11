@@ -12,9 +12,6 @@ import {
   Repeat,
   Sparkles,
   Zap,
-  ChevronDown,
-  ChevronUp,
-  ArrowRight,
   LucideIcon,
 } from 'lucide-react';
 import { Service } from '@/types/database.types';
@@ -101,20 +98,9 @@ export function ServicesSection({ services = [], sectionSettings }: ServicesSect
               </p>
 
               {/* Short Description */}
-              <p className="text-[16px] text-muted-foreground leading-relaxed flex-1 mb-6">
+              <p className="text-[16px] text-muted-foreground leading-relaxed flex-1">
                 {service.description}
               </p>
-
-              {/* Card Footer with Let's Talk CTA */}
-              <div className="pt-4 border-t border-border/50 flex items-center justify-end mt-auto">
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-[12px] bg-primary text-primary-foreground text-xs sm:text-sm font-bold shadow-xs hover:shadow-md hover:brightness-105 active:scale-95 transition-all"
-                >
-                  <span>Let’s Talk</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
             </motion.div>
           ))}
         </div>

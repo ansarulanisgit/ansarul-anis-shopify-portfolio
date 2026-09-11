@@ -1,8 +1,9 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Lock, Mail, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
+import { Lock, Mail, ArrowRight, ArrowLeft, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -11,6 +12,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -53,12 +55,6 @@ export default function AdminLoginPage() {
     }
   };
 
-  const handleDemoAccess = () => {
-    document.cookie = 'demo_admin_session=true; path=/; max-age=86400; SameSite=Lax';
-    router.push('/admin');
-    router.refresh();
-  };
-
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-muted/20 relative">
       <div className="absolute top-6 right-6">
@@ -68,12 +64,12 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md p-8 sm:p-10 rounded-2xl bg-card border border-border/80 shadow-xl">
         {/* Logo */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center font-black text-xl shadow-md mb-4">
+          <div className="h-12 w-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center font-black text-xl shadow-md mb-4 shadow-primary/25">
             A
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">AnisShopify Admin</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard Access</h1>
           <p className="text-xs text-muted-foreground mt-1">
-            Sign in to manage your portfolio, theme settings, and incoming leads
+            Sign in to manage everything in your site
           </p>
         </div>
 
@@ -90,7 +86,7 @@ export default function AdminLoginPage() {
             <div className="relative">
               <Input
                 type="email"
-                placeholder="ansarul.contact@gmail.com"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -104,14 +100,22 @@ export default function AdminLoginPage() {
             <label className="text-xs font-semibold text-foreground">Password</label>
             <div className="relative">
               <Input
-                type="password"
-                placeholder="••••••••"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="pl-9"
+                className="pl-9 pr-10"
               />
               <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
           </div>
 
@@ -129,18 +133,23 @@ export default function AdminLoginPage() {
               </>
             )}
           </button>
+
+          <div className="text-center pt-2">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Home</span>
+            </Link>
+          </div>
         </form>
 
-        {/* Demo / Preview Button */}
+        {/* Footer Credit */}
         <div className="mt-6 pt-6 border-t border-border/80 text-center">
-          <button
-            type="button"
-            onClick={handleDemoAccess}
-            className="inline-flex items-center gap-2 text-xs font-medium text-primary dark:text-sky-400 hover:underline"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Preview Admin with Demo Credentials</span>
-          </button>
+          <p className="text-xs text-muted-foreground font-medium">
+            Developed by Ansarul Anis
+          </p>
         </div>
       </div>
     </div>

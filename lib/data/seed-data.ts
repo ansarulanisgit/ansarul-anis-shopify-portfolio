@@ -28,7 +28,7 @@ export const defaultSiteSettings: SiteSettingsMap = {
     'Generates Results',
   ],
   hero_trust_chips: defaultHeroTrustChips,
-  hero_subheadline: "Hey, I’m Ansarul Anis — a Shopify Expert with 5+ years of experience building high-converting ecommerce websites. I specialize in Shopify website design, custom Shopify store development, dropshipping stores, high-performance themes, landing pages, and Shopify store redesigns—creating fast, polished experiences designed to turn traffic into revenue.",
+  hero_subheadline: "Hey, I'm Ansarul Anis. A passionate young Shopify developer engineering custom high-converting stores, direct-response landing pages, and lightning-fast themes built to turn traffic into revenue.",
   hero_primary_cta_label: 'View My Work',
   hero_secondary_cta_label: 'Contact Me',
   hero_secondary_cta_url: '#contact',

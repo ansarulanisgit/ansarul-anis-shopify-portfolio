@@ -100,7 +100,12 @@ export function AdminSidebar({
         </div>
 
         {/* Navigation Items */}
-        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5">
+        <div
+          className={cn(
+            'flex-1 py-4 px-3 space-y-1.5',
+            isCollapsed ? 'overflow-visible' : 'overflow-y-auto'
+          )}
+        >
           {navItems.map((item) => {
             const isActive = item.exact
               ? pathname === item.href
@@ -122,30 +127,50 @@ export function AdminSidebar({
                     ? 'w-10 h-10 mx-auto justify-center p-0'
                     : 'gap-3 px-3 py-2.5'
                 )}
-                title={isCollapsed ? item.label : undefined}
               >
                 <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-white dark:text-primary-foreground' : 'text-muted-foreground group-hover:text-foreground')} />
                 {!isCollapsed && <span className="truncate">{item.label}</span>}
+
+                {/* Nice Tooltip with Primary Color Background on Hover */}
+                {isCollapsed && (
+                  <div
+                    role="tooltip"
+                    className="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center -translate-x-1 group-hover:translate-x-0 select-none"
+                  >
+                    <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
+                    <span className="relative z-10">{item.label}</span>
+                  </div>
+                )}
               </Link>
             );
           })}
         </div>
 
         {/* Bottom Section - Fixed to bottom left */}
-        <div className="p-3 border-t border-border space-y-2 bg-card/95 backdrop-blur-sm mt-auto shrink-0">
+        <div className="p-3 border-t border-border space-y-2 bg-card/95 backdrop-blur-sm mt-auto shrink-0 relative overflow-visible">
           <Link
             href="/"
             target="_blank"
             className={cn(
-              'flex items-center rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-all border border-border/60 bg-background/60 shadow-xs',
+              'flex items-center rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-all border border-border/60 bg-background/60 shadow-xs group relative',
               isCollapsed
                 ? 'w-10 h-10 mx-auto justify-center p-0 hover:border-primary/40'
                 : 'w-full gap-2.5 px-3 py-2.5'
             )}
-            title="View Live Site"
           >
             <ExternalLink className="w-4 h-4 shrink-0 text-primary" />
             {!isCollapsed && <span>View Live Site</span>}
+
+            {/* Nice Tooltip with Primary Color Background */}
+            {isCollapsed && (
+              <div
+                role="tooltip"
+                className="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center -translate-x-1 group-hover:translate-x-0 select-none"
+              >
+                <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
+                <span className="relative z-10">View Live Site</span>
+              </div>
+            )}
           </Link>
 
           {/* Desktop collapse toggle at bottom */}
@@ -153,12 +178,11 @@ export function AdminSidebar({
             <button
               onClick={onToggleCollapse}
               className={cn(
-                'hidden md:flex items-center rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-all border border-border/60 bg-background/60 shadow-xs',
+                'hidden md:flex items-center rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-all border border-border/60 bg-background/60 shadow-xs group relative',
                 isCollapsed
                   ? 'w-10 h-10 mx-auto justify-center p-0 hover:border-border'
                   : 'w-full gap-2.5 px-3 py-2.5'
               )}
-              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {isCollapsed ? (
                 <ChevronRight className="w-4 h-4 shrink-0" />
@@ -167,6 +191,17 @@ export function AdminSidebar({
                   <ChevronLeft className="w-4 h-4 shrink-0" />
                   <span>Collapse Sidebar</span>
                 </>
+              )}
+
+              {/* Nice Tooltip with Primary Color Background */}
+              {isCollapsed && (
+                <div
+                  role="tooltip"
+                  className="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center -translate-x-1 group-hover:translate-x-0 select-none"
+                >
+                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
+                  <span className="relative z-10">Expand Sidebar</span>
+                </div>
               )}
             </button>
           )}

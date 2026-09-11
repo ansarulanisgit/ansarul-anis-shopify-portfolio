@@ -133,18 +133,49 @@ export async function POST(request: NextRequest) {
               onConflict: 'section_key',
             });
 
-            // If hero section has hero_trust_chips, sync to site_settings
-            if ((sec.section_key === 'home_hero' || sec.section_type === 'hero') && sec.settings?.hero_trust_chips) {
+            // Two-way sync: If hero section is published, sync all hero fields to site_settings
+            if (sec.section_key === 'home_hero' || sec.section_type === 'hero') {
               try {
                 const { data: existingHeroSetting } = await supabase.from('site_settings').select('value').eq('key', 'hero').maybeSingle();
                 const existingVal = existingHeroSetting?.value || {};
+                const s = sec.settings || {};
+                const updatedHeroVal = {
+                  ...existingVal,
+                  ...(s.eyebrow ? { hero_eyebrow: s.eyebrow } : {}),
+                  ...(s.heading ? { hero_headline: s.heading } : {}),
+                  ...(s.heading_prefix ? { hero_headline_prefix: s.heading_prefix } : {}),
+                  ...(s.subheading ? { hero_subheadline: s.subheading } : {}),
+                  ...(s.rotating_words ? { hero_rotating_words: s.rotating_words } : {}),
+                  ...(s.hero_trust_chips ? { hero_trust_chips: s.hero_trust_chips } : {}),
+                  ...(s.primary_cta_label ? { hero_primary_cta_label: s.primary_cta_label } : {}),
+                  ...(s.secondary_cta_label ? { hero_secondary_cta_label: s.secondary_cta_label } : {}),
+                  ...(s.secondary_cta_url ? { hero_secondary_cta_url: s.secondary_cta_url } : {}),
+                  ...(s.image_url ? { hero_graphic_url: s.image_url } : {}),
+                };
                 await (supabase.from('site_settings') as any).upsert({
                   key: 'hero',
-                  value: { ...existingVal, hero_trust_chips: sec.settings.hero_trust_chips },
+                  value: updatedHeroVal,
                   updated_at: new Date().toISOString(),
                 }, { onConflict: 'key' });
               } catch (heroSyncErr) {
-                console.error('Error syncing hero trust chips to site_settings:', heroSyncErr);
+                console.error('Error syncing hero section to site_settings:', heroSyncErr);
+              }
+            }
+
+            // If trust bar section is published, sync to site_settings
+            if ((sec.section_key === 'home_trust_bar' || sec.section_type === 'trust_bar') && sec.settings?.blocks) {
+              try {
+                const mappedStats = sec.settings.blocks.map((b: any) => ({
+                  value: b.stat_value,
+                  label: b.stat_label,
+                }));
+                await (supabase.from('site_settings') as any).upsert({
+                  key: 'trust_bar',
+                  value: { trust_stats: mappedStats },
+                  updated_at: new Date().toISOString(),
+                }, { onConflict: 'key' });
+              } catch (tbSyncErr) {
+                console.error('Error syncing trust bar to site_settings:', tbSyncErr);
               }
             }
           }
@@ -157,8 +188,20 @@ export async function POST(request: NextRequest) {
       try {
         writeSectionsToStorage(publishedSections);
         const heroSec = publishedSections.find((s) => s.section_key === 'home_hero' || s.section_type === 'hero');
-        if (heroSec?.settings?.hero_trust_chips) {
-          writeSettingsToStorage({ hero_trust_chips: heroSec.settings.hero_trust_chips });
+        if (heroSec?.settings) {
+          const s = heroSec.settings;
+          writeSettingsToStorage({
+            ...(s.eyebrow ? { hero_eyebrow: s.eyebrow } : {}),
+            ...(s.heading ? { hero_headline: s.heading } : {}),
+            ...(s.heading_prefix ? { hero_headline_prefix: s.heading_prefix } : {}),
+            ...(s.subheading ? { hero_subheadline: s.subheading } : {}),
+            ...(s.rotating_words ? { hero_rotating_words: s.rotating_words } : {}),
+            ...(s.hero_trust_chips ? { hero_trust_chips: s.hero_trust_chips } : {}),
+            ...(s.primary_cta_label ? { hero_primary_cta_label: s.primary_cta_label } : {}),
+            ...(s.secondary_cta_label ? { hero_secondary_cta_label: s.secondary_cta_label } : {}),
+            ...(s.secondary_cta_url ? { hero_secondary_cta_url: s.secondary_cta_url } : {}),
+            ...(s.image_url ? { hero_graphic_url: s.image_url } : {}),
+          });
         }
       } catch (storageErr) {
         console.warn('Storage sync warning:', storageErr);

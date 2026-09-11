@@ -136,68 +136,211 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        // Sync hero_trust_chips to page_sections in Supabase if present
-        const trustChipsPayload = body.hero_trust_chips || body.hero?.hero_trust_chips;
-        if (trustChipsPayload && Array.isArray(trustChipsPayload)) {
-          try {
-            const { data: heroSections } = await supabase
-              .from('page_sections')
-              .select('*')
-              .eq('section_key', 'home_hero')
-              .limit(1);
+        // Complete 2-way sync: Sync settings updates to page_sections in Supabase
+        try {
+          const { data: allSections } = await supabase
+            .from('page_sections')
+            .select('*');
 
-            if (heroSections && heroSections.length > 0) {
-              const heroSec = heroSections[0];
-              const updatedSettings = {
-                ...(heroSec.settings || {}),
-                hero_trust_chips: trustChipsPayload,
-              };
-              const updatedDraftSettings = heroSec.draft_settings
-                ? { ...(heroSec.draft_settings || {}), hero_trust_chips: trustChipsPayload }
-                : null;
+          if (allSections && allSections.length > 0) {
+            for (const sec of allSections) {
+              let secModified = false;
+              const currentSettings = { ...(sec.settings || {}) };
 
-              await (supabase.from('page_sections') as any)
-                .update({
-                  settings: updatedSettings,
-                  draft_settings: updatedDraftSettings,
-                  updated_at: new Date().toISOString(),
-                })
-                .eq('id', heroSec.id);
+              // Sync Hero
+              if (sec.section_key === 'home_hero' || sec.section_type === 'hero') {
+                if (body.hero_eyebrow || body.hero?.hero_eyebrow) {
+                  currentSettings.eyebrow = body.hero_eyebrow || body.hero?.hero_eyebrow;
+                  secModified = true;
+                }
+                if (body.hero_headline || body.hero?.hero_headline) {
+                  currentSettings.heading = body.hero_headline || body.hero?.hero_headline;
+                  secModified = true;
+                }
+                if (body.hero_headline_prefix || body.hero?.hero_headline_prefix) {
+                  currentSettings.heading_prefix = body.hero_headline_prefix || body.hero?.hero_headline_prefix;
+                  secModified = true;
+                }
+                if (body.hero_subheadline || body.hero?.hero_subheadline) {
+                  currentSettings.subheading = body.hero_subheadline || body.hero?.hero_subheadline;
+                  secModified = true;
+                }
+                if (body.hero_rotating_words || body.hero?.hero_rotating_words) {
+                  currentSettings.rotating_words = body.hero_rotating_words || body.hero?.hero_rotating_words;
+                  secModified = true;
+                }
+                if (body.hero_trust_chips || body.hero?.hero_trust_chips) {
+                  currentSettings.hero_trust_chips = body.hero_trust_chips || body.hero?.hero_trust_chips;
+                  secModified = true;
+                }
+                if (body.hero_primary_cta_label || body.hero?.hero_primary_cta_label) {
+                  currentSettings.primary_cta_label = body.hero_primary_cta_label || body.hero?.hero_primary_cta_label;
+                  secModified = true;
+                }
+                if (body.hero_secondary_cta_label || body.hero?.hero_secondary_cta_label) {
+                  currentSettings.secondary_cta_label = body.hero_secondary_cta_label || body.hero?.hero_secondary_cta_label;
+                  secModified = true;
+                }
+                if (body.hero_secondary_cta_url || body.hero?.hero_secondary_cta_url) {
+                  currentSettings.secondary_cta_url = body.hero_secondary_cta_url || body.hero?.hero_secondary_cta_url;
+                  secModified = true;
+                }
+                if (body.hero_graphic_url || body.hero?.hero_graphic_url) {
+                  currentSettings.image_url = body.hero_graphic_url || body.hero?.hero_graphic_url;
+                  secModified = true;
+                }
+              }
+
+              // Sync Trust Bar
+              if ((sec.section_key === 'home_trust_bar' || sec.section_type === 'trust_bar') && body.trust_stats) {
+                currentSettings.blocks = body.trust_stats.map((ts: any, i: number) => ({
+                  id: ts.id || `ts-${i + 1}`,
+                  type: 'stat',
+                  stat_value: ts.value,
+                  stat_label: ts.label,
+                }));
+                secModified = true;
+              }
+
+              // Sync About
+              if (sec.section_key === 'home_about' || sec.section_type === 'about') {
+                if (body.about_text) {
+                  currentSettings.description = Array.isArray(body.about_text) ? body.about_text.join('\n\n') : body.about_text;
+                  secModified = true;
+                }
+                if (body.about_tools) {
+                  currentSettings.tools = body.about_tools;
+                  secModified = true;
+                }
+                if (body.availability_line) {
+                  currentSettings.availability_line = body.availability_line;
+                  secModified = true;
+                }
+                if (body.about_photo_url) {
+                  currentSettings.image_url = body.about_photo_url;
+                  secModified = true;
+                }
+              }
+
+              // Sync Contact
+              if (sec.section_key === 'home_contact' || sec.section_type === 'contact') {
+                if (body.whatsapp_number) {
+                  currentSettings.whatsapp_number = body.whatsapp_number;
+                  secModified = true;
+                }
+                if (body.whatsapp_message) {
+                  currentSettings.whatsapp_prefill = body.whatsapp_message;
+                  secModified = true;
+                }
+              }
+
+              if (secModified) {
+                await (supabase.from('page_sections') as any)
+                  .update({
+                    settings: currentSettings,
+                    draft_settings: null,
+                    updated_at: new Date().toISOString(),
+                  })
+                  .eq('id', sec.id);
+              }
             }
-          } catch (secErr) {
-            console.error('Error syncing hero trust chips to page_sections in Supabase:', secErr);
           }
+        } catch (secSyncErr) {
+          console.error('Error syncing settings into page_sections in Supabase:', secSyncErr);
         }
       } catch (supabaseErr) {
         console.error('Supabase settings sync error:', supabaseErr);
       }
     }
 
-    // Sync trust chips to local sections file if present
-    const trustChips = body.hero_trust_chips || body.hero?.hero_trust_chips;
-    if (trustChips && Array.isArray(trustChips)) {
-      try {
-        const localSections = readSectionsFromStorage('home');
-        let modified = false;
-        const updated = localSections.map((s) => {
-          if (s.section_key === 'home_hero' || s.section_type === 'hero') {
-            modified = true;
-            return {
-              ...s,
-              settings: { ...(s.settings || {}), hero_trust_chips: trustChips },
-              draft_settings: s.draft_settings
-                ? { ...(s.draft_settings || {}), hero_trust_chips: trustChips }
-                : s.draft_settings,
-            };
+    // Sync to local sections file as well
+    try {
+      const localSections = readSectionsFromStorage('home');
+      let localModified = false;
+      const updatedLocalSections = localSections.map((s) => {
+        const currentSettings = { ...(s.settings || {}) };
+        let sMod = false;
+
+        if (s.section_key === 'home_hero' || s.section_type === 'hero') {
+          if (body.hero_eyebrow || body.hero?.hero_eyebrow) {
+            currentSettings.eyebrow = body.hero_eyebrow || body.hero?.hero_eyebrow;
+            sMod = true;
           }
-          return s;
-        });
-        if (modified) {
-          writeSectionsToStorage(updated);
+          if (body.hero_headline || body.hero?.hero_headline) {
+            currentSettings.heading = body.hero_headline || body.hero?.hero_headline;
+            sMod = true;
+          }
+          if (body.hero_headline_prefix || body.hero?.hero_headline_prefix) {
+            currentSettings.heading_prefix = body.hero_headline_prefix || body.hero?.hero_headline_prefix;
+            sMod = true;
+          }
+          if (body.hero_subheadline || body.hero?.hero_subheadline) {
+            currentSettings.subheading = body.hero_subheadline || body.hero?.hero_subheadline;
+            sMod = true;
+          }
+          if (body.hero_rotating_words || body.hero?.hero_rotating_words) {
+            currentSettings.rotating_words = body.hero_rotating_words || body.hero?.hero_rotating_words;
+            sMod = true;
+          }
+          if (body.hero_trust_chips || body.hero?.hero_trust_chips) {
+            currentSettings.hero_trust_chips = body.hero_trust_chips || body.hero?.hero_trust_chips;
+            sMod = true;
+          }
+          if (body.hero_primary_cta_label || body.hero?.hero_primary_cta_label) {
+            currentSettings.primary_cta_label = body.hero_primary_cta_label || body.hero?.hero_primary_cta_label;
+            sMod = true;
+          }
+          if (body.hero_secondary_cta_label || body.hero?.hero_secondary_cta_label) {
+            currentSettings.secondary_cta_label = body.hero_secondary_cta_label || body.hero?.hero_secondary_cta_label;
+            sMod = true;
+          }
+          if (body.hero_secondary_cta_url || body.hero?.hero_secondary_cta_url) {
+            currentSettings.secondary_cta_url = body.hero_secondary_cta_url || body.hero?.hero_secondary_cta_url;
+            sMod = true;
+          }
+          if (body.hero_graphic_url || body.hero?.hero_graphic_url) {
+            currentSettings.image_url = body.hero_graphic_url || body.hero?.hero_graphic_url;
+            sMod = true;
+          }
         }
-      } catch (err) {
-        console.error('Error writing trust chips to local sections:', err);
+
+        if ((s.section_key === 'home_trust_bar' || s.section_type === 'trust_bar') && body.trust_stats) {
+          currentSettings.blocks = body.trust_stats.map((ts: any, i: number) => ({
+            id: ts.id || `ts-${i + 1}`,
+            type: 'stat',
+            stat_value: ts.value,
+            stat_label: ts.label,
+          }));
+          sMod = true;
+        }
+
+        if (s.section_key === 'home_about' || s.section_type === 'about') {
+          if (body.about_text) {
+            currentSettings.description = Array.isArray(body.about_text) ? body.about_text.join('\n\n') : body.about_text;
+            sMod = true;
+          }
+          if (body.about_tools) {
+            currentSettings.tools = body.about_tools;
+            sMod = true;
+          }
+          if (body.availability_line) {
+            currentSettings.availability_line = body.availability_line;
+            sMod = true;
+          }
+        }
+
+        if (sMod) {
+          localModified = true;
+          return { ...s, settings: currentSettings, draft_settings: null };
+        }
+        return s;
+      });
+
+      if (localModified) {
+        writeSectionsToStorage(updatedLocalSections);
       }
+    } catch (err) {
+      console.error('Error writing synchronized settings to local sections:', err);
     }
 
     try {

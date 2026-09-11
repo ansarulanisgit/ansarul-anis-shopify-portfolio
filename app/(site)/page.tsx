@@ -13,8 +13,9 @@ import {
 import { PageSectionRenderer } from '@/lib/sections/renderer';
 import { Eye, ArrowLeft, ExternalLink } from 'lucide-react';
 
-// Incremental Static Regeneration (ISR) with 3600 second safety net
-export const revalidate = 3600;
+// Real-time dynamic rendering directly from the database on every request
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoMeta('home');

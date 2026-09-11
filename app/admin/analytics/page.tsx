@@ -92,15 +92,15 @@ export default function AdminAnalyticsPage() {
     return () => clearInterval(interval);
   }, [timeRange, loadAnalytics]);
 
-  const activeNow = data?.active_now || 1;
+  const activeNow = data?.active_now ?? 0;
   const summary = data?.summary || {
-    total_visitors: 1421,
-    total_page_views: 3410,
-    total_cta_clicks: 161,
-    ctr_percent: '11.3',
-    avg_duration_seconds: 168,
-    avg_duration_formatted: '2m 48s',
-    bounce_rate: '28.4%',
+    total_visitors: 0,
+    total_page_views: 0,
+    total_cta_clicks: 0,
+    ctr_percent: '0.0',
+    avg_duration_seconds: 0,
+    avg_duration_formatted: '0s',
+    bounce_rate: '0.0%',
   };
   const timeSeries = data?.time_series || [];
   const deviceBreakdown = data?.device_breakdown || [];
@@ -179,11 +179,10 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-foreground">
-            {summary.total_visitors.toLocaleString()}
+            {isLoading ? '...' : summary.total_visitors.toLocaleString()}
           </div>
-          <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-            <span>&uarr; 14.2%</span>
-            <span className="text-muted-foreground">growth</span>
+          <div className="text-xs text-muted-foreground font-semibold flex items-center gap-1">
+            <span>{summary.total_visitors > 0 ? `${summary.total_visitors} unique visitors` : 'No visits recorded yet'}</span>
           </div>
         </div>
 
@@ -196,10 +195,12 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-foreground">
-            {summary.total_page_views.toLocaleString()}
+            {isLoading ? '...' : summary.total_page_views.toLocaleString()}
           </div>
           <div className="text-xs text-muted-foreground font-semibold">
-            2.4 views / visitor
+            {summary.total_visitors > 0
+              ? `${(summary.total_page_views / summary.total_visitors).toFixed(1)} views / visitor`
+              : '0 views / visitor'}
           </div>
         </div>
 
@@ -212,10 +213,10 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-foreground">
-            {summary.avg_duration_formatted}
+            {isLoading ? '...' : summary.avg_duration_formatted}
           </div>
           <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-            High dwell engagement
+            {summary.avg_duration_seconds > 0 ? 'Active session dwell' : 'No duration logged'}
           </div>
         </div>
 
@@ -228,7 +229,7 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-foreground">
-            {summary.total_cta_clicks.toLocaleString()}
+            {isLoading ? '...' : summary.total_cta_clicks.toLocaleString()}
           </div>
           <div className="text-xs text-primary font-bold">
             {summary.ctr_percent}% Conversion Rate
@@ -244,10 +245,12 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-foreground">
-            {summary.bounce_rate}
+            {isLoading ? '...' : summary.bounce_rate}
           </div>
           <div className="text-xs text-muted-foreground font-semibold">
-            71.6% retention rate
+            {summary.total_visitors > 0
+              ? `${(100 - parseFloat(summary.bounce_rate || '0')).toFixed(1)}% retention rate`
+              : '0.0% retention rate'}
           </div>
         </div>
       </div>
@@ -261,7 +264,7 @@ export default function AdminAnalyticsPage() {
               <span>Audience Visit Counts &amp; CTA Clicks Over Time</span>
             </h2>
             <p className="text-xs text-muted-foreground">
-              Dynamic tracking of visitors vs. high-intent call-to-action button clicks ({timeRange})
+              Dynamic calendar date tracking of visitors vs. high-intent call-to-action button clicks ({timeRange})
             </p>
           </div>
           <div className="flex items-center gap-4 text-xs font-semibold">
@@ -290,7 +293,7 @@ export default function AdminAnalyticsPage() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-              <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} minTickGap={16} />
               <YAxis fontSize={11} tickLine={false} axisLine={false} />
               <Tooltip
                 contentStyle={{
