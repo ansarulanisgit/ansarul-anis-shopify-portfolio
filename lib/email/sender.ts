@@ -156,12 +156,13 @@ export async function sendLeadEmail(
   data: LeadEmailData,
   config?: DynamicEmailConfig
 ): Promise<{ success: boolean; method?: string; error?: any }> {
-  const recipient =
+  const recipient = (
     config?.notification_email ||
     process.env.CONTACT_NOTIFICATION_EMAIL ||
-    'ansarul.contact@gmail.com';
+    'ansarul.contact@gmail.com'
+  ).trim();
 
-  const senderName = config?.email_sender_name || 'AnisShopify Contact';
+  const senderName = (config?.email_sender_name || 'AnisShopify Contact').trim();
   const rawSubjectTemplate =
     config?.email_subject_template || '⚡ New Lead: {subject} ({name})';
 
@@ -172,10 +173,10 @@ export async function sendLeadEmail(
     .replace(/{project_type}/g, data.project_type || 'General')
     .replace(/{budget}/g, data.budget_range || 'N/A');
 
-  const resendApiKey = config?.resend_api_key || process.env.RESEND_API_KEY;
-  const smtpUser = config?.smtp_user || process.env.SMTP_USER;
-  const smtpPass = config?.smtp_pass || process.env.SMTP_PASS;
-  const smtpHost = config?.smtp_host || process.env.SMTP_HOST || 'smtp.gmail.com';
+  const resendApiKey = (config?.resend_api_key || process.env.RESEND_API_KEY || '').trim();
+  const smtpUser = (config?.smtp_user || process.env.SMTP_USER || '').trim();
+  const smtpPass = (config?.smtp_pass || process.env.SMTP_PASS || '').trim();
+  const smtpHost = (config?.smtp_host || process.env.SMTP_HOST || 'smtp.gmail.com').trim();
   const smtpPort = Number(config?.smtp_port || process.env.SMTP_PORT) || 465;
 
   const emailHtml = generateLeadEmailHtml(data, config);
@@ -225,6 +226,9 @@ export async function sendLeadEmail(
           user: smtpUser,
           pass: smtpPass,
         },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
       });
 
       await transporter.sendMail({

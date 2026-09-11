@@ -44,20 +44,15 @@ export async function getSiteSettings(): Promise<SiteSettingsMap> {
       return readSettingsFromStorage();
     }
 
-    const settingsMap = { ...defaultSiteSettings };
+    const localSettings = readSettingsFromStorage();
+    const settingsMap = { ...localSettings };
     for (const item of data) {
-      if (item.key === 'general' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'hero' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'trust_bar' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'about' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'contact' && typeof item.value === 'object' && item.value !== null) {
-        Object.assign(settingsMap, item.value);
-      } else if (item.key === 'appearance' && typeof item.value === 'object' && item.value !== null) {
-        settingsMap.appearance = { ...settingsMap.appearance, ...(item.value as any) };
+      if (typeof item.value === 'object' && item.value !== null) {
+        if (item.key === 'appearance') {
+          settingsMap.appearance = { ...settingsMap.appearance, ...(item.value as any) };
+        } else {
+          Object.assign(settingsMap, item.value);
+        }
       }
     }
     return settingsMap;

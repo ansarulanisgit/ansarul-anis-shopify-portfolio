@@ -29,7 +29,8 @@ export async function GET() {
       return NextResponse.json({ success: true, data: local, source: 'fallback' });
     }
 
-    const settingsMap = { ...defaultSiteSettings };
+    const localSettings = readSettingsFromStorage();
+    const settingsMap = { ...localSettings };
     for (const item of data) {
       if (typeof item.value === 'object' && item.value !== null) {
         if (item.key === 'appearance') {
@@ -108,12 +109,39 @@ export async function POST(request: NextRequest) {
           });
         }
 
-        if (body.whatsapp_number || body.whatsapp_message) {
+        if (
+          body.whatsapp_number ||
+          body.whatsapp_message ||
+          body.notification_email ||
+          body.smtp_user ||
+          body.smtp_pass ||
+          body.smtp_host ||
+          body.smtp_port ||
+          body.resend_api_key ||
+          body.email_sender_name ||
+          body.email_subject_template ||
+          body.email_header_title ||
+          body.email_template_style ||
+          body.email_accent_color ||
+          body.email_provider
+        ) {
           entries.push({
             key: 'contact',
             value: {
               whatsapp_number: body.whatsapp_number || updatedLocal.whatsapp_number,
               whatsapp_message: body.whatsapp_message || updatedLocal.whatsapp_message,
+              notification_email: body.notification_email || updatedLocal.notification_email,
+              email_sender_name: body.email_sender_name || updatedLocal.email_sender_name,
+              email_subject_template: body.email_subject_template || updatedLocal.email_subject_template,
+              email_header_title: body.email_header_title || updatedLocal.email_header_title,
+              email_template_style: body.email_template_style || updatedLocal.email_template_style,
+              email_accent_color: body.email_accent_color || updatedLocal.email_accent_color,
+              email_provider: body.email_provider || updatedLocal.email_provider,
+              smtp_host: body.smtp_host || updatedLocal.smtp_host,
+              smtp_port: body.smtp_port || updatedLocal.smtp_port,
+              smtp_user: body.smtp_user || updatedLocal.smtp_user,
+              smtp_pass: body.smtp_pass || updatedLocal.smtp_pass,
+              resend_api_key: body.resend_api_key || updatedLocal.resend_api_key,
             },
           });
         }

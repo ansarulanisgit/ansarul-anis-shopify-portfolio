@@ -84,25 +84,29 @@ export async function POST(request: Request) {
       }
     }
 
-    // 2. High-speed, non-blocking email dispatch to receiver address
-    // Dispatched in background so the user gets instant form response without waiting for SMTP/API roundtrips
-    getSiteSettings()
-      .then((siteSettings) => {
-        return sendLeadEmail(
-          {
-            name,
-            email,
-            subject,
-            message,
-            project_type,
-            budget_range,
-          },
-          siteSettings
-        );
-      })
-      .catch((emailErr) => {
-        console.warn('Lead email notification background delivery warning:', emailErr);
-      });
+    // 2. Send email notification (awaited so serverless execution context stays active until sent)
+    try {
+      const siteSettings = await getSiteSettings();
+      const emailResult = await sendLeadEmail(
+        {
+          name,
+          email,
+          subject,
+          message,
+          project_type,
+          budget_range,
+        },
+        siteSettings
+      );
+
+      if (!emailResult.success) {
+        console.error('Lead email notification delivery failed:', emailResult.error);
+      } else {
+        console.log(`✅ Lead email notification successfully sent via ${emailResult.method}`);
+      }
+    } catch (emailErr) {
+      console.error('Lead email notification background delivery error:', emailErr);
+    }
 
     return NextResponse.json({
       success: true,
