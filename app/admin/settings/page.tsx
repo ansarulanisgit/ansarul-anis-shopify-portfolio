@@ -23,6 +23,8 @@ import {
   ShoppingBag,
   Shapes,
   X,
+  Mail,
+  Send,
 } from 'lucide-react';
 import {
   SiteSettingsMap,
@@ -1318,6 +1320,50 @@ export default function AdminSettingsPage() {
               <Save className="w-4 h-4" />
               <span>{isSaving ? 'Saving...' : 'Save WhatsApp Settings'}</span>
             </button>
+          </div>
+
+          {/* Email Notification Settings & Test */}
+          <div className="pt-6 border-t border-border space-y-4">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Mail className="w-4 h-4 text-primary" />
+              <span>Lead Email Notification &amp; Delivery Test</span>
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              When clients submit inquiries through the contact form, notifications are saved to your Leads Inbox and dispatched to <span className="font-semibold text-foreground">ansarul.contact@gmail.com</span>.
+            </p>
+
+            <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs font-bold text-foreground">Test Email Dispatch</div>
+                  <div className="text-[11px] text-muted-foreground">Sends a live test notification to ansarul.contact@gmail.com</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setIsSaving(true);
+                    try {
+                      const res = await fetch('/api/test-email', { method: 'POST' });
+                      const json = await res.json();
+                      if (json.success) {
+                        showNotification(`✅ ${json.message}`);
+                      } else {
+                        showNotification(`❌ ${json.error}`);
+                      }
+                    } catch (err: any) {
+                      showNotification(`❌ Error: ${err.message}`);
+                    } finally {
+                      setIsSaving(false);
+                    }
+                  }}
+                  disabled={isSaving}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-xs hover:bg-primary/90 transition-all disabled:opacity-50"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{isSaving ? 'Testing...' : 'Send Test Email'}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

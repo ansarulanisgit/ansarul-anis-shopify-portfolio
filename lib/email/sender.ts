@@ -136,6 +136,8 @@ export async function sendLeadEmail(data: LeadEmailData): Promise<{ success: boo
   const emailHtml = generateLeadEmailHtml(data);
   const emailSubject = `⚡ New Lead: ${data.subject} (${data.name})`;
 
+  let lastError: string | null = null;
+
   // Method 1: Resend API (Lightning fast REST API)
   const resendApiKey = process.env.RESEND_API_KEY;
   if (resendApiKey && resendApiKey.startsWith('re_')) {
@@ -160,10 +162,12 @@ export async function sendLeadEmail(data: LeadEmailData): Promise<{ success: boo
         return { success: true, method: 'resend' };
       } else {
         const errJson = await res.json().catch(() => ({}));
-        console.warn('Resend error response:', errJson);
+        lastError = `Resend Error (${res.status}): ${errJson.message || JSON.stringify(errJson)}`;
+        console.warn(lastError);
       }
     } catch (err: any) {
-      console.warn('Resend delivery attempt failed:', err.message);
+      lastError = `Resend Fetch Exception: ${err.message}`;
+      console.warn(lastError);
     }
   }
 
@@ -197,10 +201,12 @@ export async function sendLeadEmail(data: LeadEmailData): Promise<{ success: boo
       console.log('✅ Lead email sent via SMTP to:', recipient);
       return { success: true, method: 'smtp' };
     } catch (err: any) {
-      console.warn('SMTP delivery attempt failed:', err.message);
+      lastError = `SMTP Error: ${err.message}`;
+      console.warn(lastError);
     }
   }
 
-  console.log(`[Email Dispatch Log] Destination: ${recipient} | Subject: ${emailSubject} | From: ${data.name} <${data.email}>`);
-  return { success: false, method: 'none' };
+  const noCredsMsg = lastError || 'Neither RESEND_API_KEY nor (SMTP_USER + SMTP_PASS) is configured in environment variables.';
+  console.log(`[Email Dispatch Log] Destination: ${recipient} | Status: ${noCredsMsg}`);
+  return { success: false, method: 'none', error: noCredsMsg };
 }
