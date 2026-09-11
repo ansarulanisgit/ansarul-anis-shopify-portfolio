@@ -13,6 +13,7 @@ import { AboutSection } from '@/components/site/AboutSection';
 import { FAQSection } from '@/components/site/FAQSection';
 import { ContactSection } from '@/components/site/ContactSection';
 import { Footer } from '@/components/site/Footer';
+import { ExitIntentModal } from '@/components/site/ExitIntentModal';
 import { CtaSection } from '@/components/site/CtaSection';
 import { SpacerSection } from '@/components/site/SpacerSection';
 import { CustomSection } from '@/components/site/CustomSection';
@@ -125,6 +126,16 @@ export const SECTION_REGISTRY: Record<SectionType, RegisteredSectionItem> = {
         developerName={props.data?.siteSettings?.developer_name}
         socialLinks={props.data?.siteSettings?.social_links}
         sectionSettings={props.settings}
+      />
+    ),
+  },
+  exit_popup: {
+    definition: SECTION_DEFINITIONS.exit_popup,
+    component: (props: SectionComponentProps) => (
+      <ExitIntentModal
+        settings={props.settings}
+        whatsappNumber={props.data?.siteSettings?.whatsapp_number}
+        whatsappMessage={props.data?.siteSettings?.whatsapp_message}
       />
     ),
   },

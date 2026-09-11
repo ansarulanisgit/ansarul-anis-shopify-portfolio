@@ -1260,26 +1260,33 @@ export function SectionEditorDrawer({
                           />
                         </div>
                       </div>
+                    </>
+                  )}
 
-                      {/* Exit Intent Popup Configuration */}
-                      <div className="p-4 rounded-xl border border-border bg-card/80 space-y-3 pt-3">
+                  {/* EXIT POPUP SPECIFIC */}
+                  {section.section_type === 'exit_popup' && (
+                    <>
+                      <div className="p-4 rounded-xl border border-border bg-card space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-foreground text-xs flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-primary" />
+                          <span className="font-bold text-foreground text-sm flex items-center gap-1.5">
+                            <Sparkles className="w-4 h-4 text-primary" />
                             <span>Exit Intent Visitor Popup</span>
                           </span>
-                          <input
-                            type="checkbox"
-                            checked={settings.exit_popup_enabled !== false}
-                            onChange={(e) => updateSetting('exit_popup_enabled', e.target.checked)}
-                            className="w-4 h-4 rounded text-primary"
-                          />
+                          <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground cursor-pointer">
+                            <span>Enable Popup</span>
+                            <input
+                              type="checkbox"
+                              checked={settings.exit_popup_enabled !== false}
+                              onChange={(e) => updateSetting('exit_popup_enabled', e.target.checked)}
+                              className="w-4 h-4 rounded text-primary"
+                            />
+                          </label>
                         </div>
 
                         {settings.exit_popup_enabled !== false && (
-                          <div className="space-y-2.5 pt-1 border-t border-border/40">
-                            <div className="space-y-1">
-                              <span className="text-[10px] text-muted-foreground font-semibold">Badge Hook Text</span>
+                          <div className="space-y-3 pt-2 border-t border-border/40">
+                            <div className="space-y-1.5">
+                              <label className="text-xs text-muted-foreground font-semibold">Badge Hook Text (Eyebrow)</label>
                               <Input
                                 value={settings.exit_popup_eyebrow || 'WAIT! BEFORE YOU GO'}
                                 onChange={(e) => updateSetting('exit_popup_eyebrow', e.target.value)}
@@ -1287,8 +1294,8 @@ export function SectionEditorDrawer({
                               />
                             </div>
 
-                            <div className="space-y-1">
-                              <span className="text-[10px] text-muted-foreground font-semibold">Popup Headline</span>
+                            <div className="space-y-1.5">
+                              <label className="text-xs text-muted-foreground font-semibold">Popup Headline</label>
                               <Input
                                 value={settings.exit_popup_title || "Let's Build Your Dream Shopify Store"}
                                 onChange={(e) => updateSetting('exit_popup_title', e.target.value)}
@@ -1296,37 +1303,37 @@ export function SectionEditorDrawer({
                               />
                             </div>
 
-                            <div className="space-y-1">
-                              <span className="text-[10px] text-muted-foreground font-semibold">Popup Subheading</span>
+                            <div className="space-y-1.5">
+                              <label className="text-xs text-muted-foreground font-semibold">Popup Subheading</label>
                               <Textarea
-                                value={settings.exit_popup_subheading || 'Get a Free 15-Minute Shopify Audit & Fixed Quote for your project.'}
+                                value={settings.exit_popup_subheading || 'Get a Free 15-Minute Shopify Audit & Fixed Quote for your project. Reach out on WhatsApp or drop a quick line below!'}
                                 onChange={(e) => updateSetting('exit_popup_subheading', e.target.value)}
                                 placeholder="Get a Free 15-Minute Shopify Audit..."
-                                className="min-h-[60px]"
+                                className="min-h-[70px]"
                               />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="space-y-1">
-                                <span className="text-[10px] text-muted-foreground font-semibold">WhatsApp Button Text</span>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="space-y-1.5">
+                                <label className="text-xs text-muted-foreground font-semibold">WhatsApp Button Text</label>
                                 <Input
                                   value={settings.exit_popup_whatsapp_label || 'Chat on WhatsApp'}
                                   onChange={(e) => updateSetting('exit_popup_whatsapp_label', e.target.value)}
                                   placeholder="Chat on WhatsApp"
                                 />
                               </div>
-                              <div className="space-y-1">
-                                <span className="text-[10px] text-muted-foreground font-semibold">Reply Tag</span>
+                              <div className="space-y-1.5">
+                                <label className="text-xs text-muted-foreground font-semibold">WhatsApp Reply Tag</label>
                                 <Input
-                                  value={settings.exit_popup_whatsapp_tag || 'Under 20m reply'}
+                                  value={settings.exit_popup_whatsapp_tag || ''}
                                   onChange={(e) => updateSetting('exit_popup_whatsapp_tag', e.target.value)}
-                                  placeholder="Under 20m reply"
+                                  placeholder="Optional tag (e.g. Under 20m reply)"
                                 />
                               </div>
                             </div>
 
-                            <div className="space-y-1">
-                              <span className="text-[10px] text-muted-foreground font-semibold">Submit Button Text</span>
+                            <div className="space-y-1.5">
+                              <label className="text-xs text-muted-foreground font-semibold">Submit Button Text</label>
                               <Input
                                 value={settings.exit_popup_submit_label || 'Get Free Audit & Quote'}
                                 onChange={(e) => updateSetting('exit_popup_submit_label', e.target.value)}

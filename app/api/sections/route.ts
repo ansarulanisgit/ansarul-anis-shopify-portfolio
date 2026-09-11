@@ -206,8 +206,8 @@ export async function POST(request: NextRequest) {
               }
             }
 
-            // Sync navigation & footer section to site_settings general
-            if (sec.section_type === 'navigation' || sec.section_type === 'footer' || sec.settings?.exit_popup_title) {
+            // Sync navigation, footer & exit_popup section to site_settings general
+            if (sec.section_type === 'navigation' || sec.section_type === 'footer' || sec.section_type === 'exit_popup' || sec.settings?.exit_popup_title) {
               try {
                 const s = sec.settings || {};
                 const { data: existingGen } = await supabase.from('site_settings').select('value').eq('key', 'general').maybeSingle();

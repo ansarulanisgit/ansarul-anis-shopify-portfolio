@@ -415,6 +415,7 @@ export type SectionType =
   | 'faq'
   | 'contact'
   | 'footer'
+  | 'exit_popup'
   | 'cta'
   | 'text_image'
   | 'stats'

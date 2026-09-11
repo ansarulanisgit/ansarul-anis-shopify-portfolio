@@ -178,15 +178,10 @@ export function ExitIntentModal({
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleWhatsAppClick}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all active:scale-[0.98] group"
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all active:scale-[0.98] group"
             >
               <MessageCircle className="w-4 h-4" />
               <span>{whatsappLabel}</span>
-              {whatsappTag && (
-                <span className="text-[10px] font-normal opacity-90 bg-white/20 px-2 py-0.5 rounded-full">
-                  {whatsappTag}
-                </span>
-              )}
             </a>
           </div>
 
