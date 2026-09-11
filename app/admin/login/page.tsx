@@ -148,7 +148,15 @@ export default function AdminLoginPage() {
         {/* Footer Credit */}
         <div className="mt-6 pt-6 border-t border-border/80 text-center">
           <p className="text-xs text-muted-foreground font-medium">
-            Developed by Ansarul Anis
+            Developed by{' '}
+            <a
+              href="https://www.facebook.com/ansarulanis"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline font-semibold transition-colors"
+            >
+              Ansarul Anis
+            </a>
           </p>
         </div>
       </div>
