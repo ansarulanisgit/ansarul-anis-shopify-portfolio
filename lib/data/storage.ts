@@ -55,6 +55,19 @@ function safeWriteFile(primaryFile: string, fallbackFile: string, content: strin
   return false;
 }
 
+function mergeMissingDefaultSections(sections: PageSection[]): PageSection[] {
+  const existingTypes = new Set(sections.map((s) => s.section_type));
+  const missingDefaults = initialDefaultSections.filter((def) => !existingTypes.has(def.section_type));
+  if (missingDefaults.length === 0) return sections;
+
+  const maxOrder = Math.max(...sections.map((s) => s.order_index ?? 0), -1);
+  const toAdd = missingDefaults.map((def, idx) => ({
+    ...def,
+    order_index: maxOrder + 1 + idx,
+  }));
+  return [...sections, ...toAdd];
+}
+
 export function readSectionsFromStorage(pageKey: string = 'home'): PageSection[] {
   // 1. Check writable tmp storage
   try {
@@ -62,7 +75,7 @@ export function readSectionsFromStorage(pageKey: string = 'home'): PageSection[]
       const raw = fs.readFileSync(TMP_SECTIONS_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return mergeMissingDefaultSections(parsed);
       }
     }
   } catch {}
@@ -73,7 +86,7 @@ export function readSectionsFromStorage(pageKey: string = 'home'): PageSection[]
       const raw = fs.readFileSync(SECTIONS_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return mergeMissingDefaultSections(parsed);
       }
     }
   } catch (err) {

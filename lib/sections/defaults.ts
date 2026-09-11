@@ -789,7 +789,7 @@ export const initialDefaultSections: PageSection[] = [
     updated_at: new Date().toISOString(),
   },
   {
-    id: 'sec-exit-popup',
+    id: 'f7b8c9d0-1e2f-4a5b-8c9d-0e1f2a3b4c5d',
     page_key: 'home',
     section_key: 'home_exit_popup',
     section_type: 'exit_popup',

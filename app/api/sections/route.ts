@@ -32,6 +32,37 @@ function isValidUuid(str?: string): boolean {
   );
 }
 
+async function ensureDefaultSections(
+  fetchedSections: PageSection[],
+  pageKey: string,
+  supabase?: any
+): Promise<PageSection[]> {
+  if (pageKey !== 'home') return fetchedSections;
+  const existingTypes = new Set(fetchedSections.map((s) => s.section_type));
+  const missingDefaults = initialDefaultSections.filter((def) => !existingTypes.has(def.section_type));
+
+  if (missingDefaults.length === 0) {
+    return fetchedSections.sort((a, b) => a.order_index - b.order_index);
+  }
+
+  const maxOrder = fetchedSections.reduce((max, s) => Math.max(max, s.order_index ?? 0), -1);
+  const toAdd: PageSection[] = missingDefaults.map((def, idx) => ({
+    ...def,
+    order_index: maxOrder + 1 + idx,
+  }));
+
+  if (supabase) {
+    try {
+      await supabase.from('page_sections').upsert(toAdd, { onConflict: 'id' });
+    } catch (err) {
+      console.warn('Failed to auto-seed missing default sections to Supabase:', err);
+    }
+  }
+
+  const merged = [...fetchedSections, ...toAdd];
+  return merged.sort((a, b) => a.order_index - b.order_index);
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const pageKey = searchParams.get('pageKey') || searchParams.get('page_key') || 'home';
@@ -77,7 +108,8 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({ success: true, data, source: 'supabase' });
+    const finalData = await ensureDefaultSections(data, pageKey, supabase);
+    return NextResponse.json({ success: true, data: finalData, source: 'supabase' });
   } catch (err: any) {
     const all = readSectionsFromStorage(pageKey);
     return NextResponse.json({
