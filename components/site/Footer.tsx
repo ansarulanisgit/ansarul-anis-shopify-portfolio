@@ -34,7 +34,7 @@ export function Footer({
     { label: 'Home', href: '#home' },
     { label: 'My works', href: '#work' },
     { label: 'Services', href: '#services' },
-    { label: 'About', href: '#about' },
+    { label: 'Testimonials', href: '#testimonials' },
     { label: 'FAQ', href: '#faq' },
     { label: 'Contact', href: '#contact' },
   ];

@@ -29,7 +29,7 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
         { label: 'Home', href: '#home' },
         { label: 'Work', href: '#work' },
         { label: 'Services', href: '#services' },
-        { label: 'About', href: '#about' },
+        { label: 'Testimonials', href: '#testimonials' },
         { label: 'FAQ', href: '#faq' },
         { label: 'Contact', href: '#contact' },
       ],

@@ -19,7 +19,7 @@ const defaultNavLinks = [
   { label: 'Home', href: '#home' },
   { label: 'Work', href: '#work' },
   { label: 'Services', href: '#services' },
-  { label: 'About', href: '#about' },
+  { label: 'Testimonials', href: '#testimonials' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Contact', href: '#contact' },
 ];
@@ -51,7 +51,7 @@ export function Navbar({ siteName = 'AnisShopify', ctaLabel = "Let's Talk", sect
 
   // IntersectionObserver for active section highlighting
   React.useEffect(() => {
-    const sections = ['home', 'work', 'services', 'about', 'faq', 'contact'];
+    const sections = ['home', 'work', 'services', 'testimonials', 'faq', 'contact'];
     const observers: IntersectionObserver[] = [];
 
     sections.forEach((id) => {
