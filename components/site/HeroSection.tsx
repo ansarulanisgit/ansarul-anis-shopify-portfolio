@@ -323,7 +323,7 @@ export function HeroSection({ settings = {}, sectionSettings }: HeroSectionProps
                 className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-card/95 backdrop-blur-md p-2.5 px-3.5 rounded-2xl border border-border/80 shadow-xl flex items-center gap-2.5 z-20"
               >
                 <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-primary shrink-0 shadow-xs">
-                  <Image src="/images/ansarul-anis.jpg" alt="Ansarul Anis" fill className="object-cover" />
+                  <Image src="/images/ansarul-anis.jpg" alt="Ansarul Anis" fill sizes="32px" className="object-cover" />
                 </div>
                 <div>
                   <div className="text-xs font-bold text-foreground">Ansarul Anis</div>
