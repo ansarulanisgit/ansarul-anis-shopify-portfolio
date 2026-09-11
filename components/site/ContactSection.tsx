@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion } from 'framer-motion';
-import { Mail, MessageCircle, Send, CheckCircle2, Clock, ShieldCheck, Sparkles } from 'lucide-react';
+import { Mail, MessageCircle, Send, CheckCircle2, Clock, ShieldCheck, Sparkles, TrendingUp, Smartphone, FileCheck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select } from '@/components/ui/select';
@@ -167,6 +167,27 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                 <div>
                   <div className="text-sm font-semibold text-foreground">100% Native Shopify 2.0</div>
                   <div className="text-xs text-muted-foreground">Clean, modular architecture without third-party app bloat.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <TrendingUp className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-sm font-semibold text-foreground">Conversion-Driven Approach</div>
+                  <div className="text-xs text-muted-foreground">Strategic UX, compelling layouts, and optimized customer journeys designed to turn visitors into buyers.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Smartphone className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-sm font-semibold text-foreground">Built for Every Screen</div>
+                  <div className="text-xs text-muted-foreground">Fast, responsive, and carefully optimized for mobile, tablet, and desktop shopping.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <FileCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-sm font-semibold text-foreground">Transparent From Start to Finish</div>
+                  <div className="text-xs text-muted-foreground">Clear communication, regular updates, and a straightforward process with no hidden surprises.</div>
                 </div>
               </div>
             </div>
