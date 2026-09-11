@@ -131,7 +131,7 @@ export function ExitIntentModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-xs animate-in fade-in duration-250 select-none">
-      <div className="relative w-full max-w-lg bg-card border border-border/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
+      <div className="relative w-full max-w-lg sm:max-w-[612px] bg-card border border-border/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
         {/* Top Accent Gradient Line */}
         <div className="h-1.5 w-full bg-gradient-to-r from-primary via-accent to-primary" />
 
@@ -152,7 +152,7 @@ export function ExitIntentModal({
               <span>Wait! Before You Go</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground mb-2 leading-snug">
-              Let&apos;s Build Your Dream Shopify Store 🚀
+              Let&apos;s Build Your Dream Shopify Store
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
               Get a <strong className="text-foreground">Free 15-Minute Shopify Audit &amp; Fixed Quote</strong> for your project. Reach out on WhatsApp or drop a quick line below!

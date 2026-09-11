@@ -124,14 +124,6 @@ export function Footer({
               <>&copy; {currentYear} {displaySiteName}. All rights reserved.</>
             )}
           </div>
-
-          <button
-            onClick={scrollToTop}
-            className="flex items-center gap-1.5 hover:text-foreground transition-colors"
-          >
-            <span>{backToTopText}</span>
-            <ArrowUp className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </footer>
