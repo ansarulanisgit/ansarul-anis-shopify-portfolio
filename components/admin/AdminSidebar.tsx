@@ -100,12 +100,7 @@ export function AdminSidebar({
         </div>
 
         {/* Navigation Items */}
-        <div
-          className={cn(
-            'flex-1 py-4 px-3 space-y-1.5',
-            isCollapsed ? 'overflow-visible' : 'overflow-y-auto'
-          )}
-        >
+        <div className="flex-1 min-w-0 min-h-0 overflow-y-auto overflow-x-hidden py-3 px-3 space-y-1">
           {navItems.map((item) => {
             const isActive = item.exact
               ? pathname === item.href
@@ -119,23 +114,23 @@ export function AdminSidebar({
                 href={item.href}
                 onClick={onClose}
                 className={cn(
-                  'flex items-center rounded-xl text-sm font-medium transition-all group relative',
+                  'flex items-center rounded-xl text-xs sm:text-sm font-semibold transition-all group relative',
                   isActive
-                    ? 'bg-accent-800 text-white shadow-sm dark:bg-primary dark:text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground shadow-md shadow-primary/25'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/70',
                   isCollapsed
                     ? 'w-10 h-10 mx-auto justify-center p-0'
                     : 'gap-3 px-3 py-2.5'
                 )}
               >
-                <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-white dark:text-primary-foreground' : 'text-muted-foreground group-hover:text-foreground')} />
+                <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-primary-foreground' : 'text-muted-foreground group-hover:text-foreground')} />
                 {!isCollapsed && <span className="truncate">{item.label}</span>}
 
                 {/* Nice Tooltip with Primary Color Background on Hover */}
                 {isCollapsed && (
                   <div
                     role="tooltip"
-                    className="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center -translate-x-1 group-hover:translate-x-0 select-none"
+                    className="fixed left-20 ml-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center select-none"
                   >
                     <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
                     <span className="relative z-10">{item.label}</span>
@@ -165,7 +160,7 @@ export function AdminSidebar({
             {isCollapsed && (
               <div
                 role="tooltip"
-                className="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center -translate-x-1 group-hover:translate-x-0 select-none"
+                className="fixed left-20 ml-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center select-none"
               >
                 <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
                 <span className="relative z-10">View Live Site</span>
@@ -197,7 +192,7 @@ export function AdminSidebar({
               {isCollapsed && (
                 <div
                   role="tooltip"
-                  className="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center -translate-x-1 group-hover:translate-x-0 select-none"
+                  className="fixed left-20 ml-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold shadow-xl shadow-primary/25 opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-150 whitespace-nowrap z-50 flex items-center select-none"
                 >
                   <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rotate-45" />
                   <span className="relative z-10">Expand Sidebar</span>
