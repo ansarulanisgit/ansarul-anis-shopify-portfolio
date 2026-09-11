@@ -42,8 +42,8 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
     resolver: zodResolver(contactSchema),
     defaultValues: {
       subject: '',
-      budget_range: '$2000-$5000',
-      project_type: 'New store',
+      budget_range: '',
+      project_type: '',
       honeypot: '',
     },
   });
@@ -235,6 +235,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                     <div className="space-y-1.5">
                       <label className="text-xs font-semibold text-foreground">Project Type</label>
                       <Select {...register('project_type')}>
+                        <option value="">Select one..</option>
                         <option value="New store">New Custom Shopify Store</option>
                         <option value="Landing page">High-Converting Landing Page</option>
                         <option value="Redesign">Existing Store Redesign / Migration</option>
@@ -251,6 +252,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                     <div className="space-y-1.5">
                       <label className="text-xs font-semibold text-foreground">Estimated Budget</label>
                       <Select {...register('budget_range')}>
+                        <option value="">Select one..</option>
                         <option value="<$500">&lt; $500 (Small tweaks)</option>
                         <option value="$500-$2000">$500 - $2,000 (Landing page)</option>
                         <option value="$2000-$5000">$2,000 - $5,000 (Custom theme build)</option>
