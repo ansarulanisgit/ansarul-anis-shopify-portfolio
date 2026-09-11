@@ -2,8 +2,10 @@
 
 import * as React from 'react';
 import Image from 'next/image';
-import { UploadCloud, X, AlertCircle } from 'lucide-react';
+import { UploadCloud, X, AlertCircle, ImageIcon, FileImage } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { addMediaItem } from '@/lib/media-library';
+import { MediaPickerModal } from './MediaPickerModal';
 
 interface ImageUploaderProps {
   value?: string;
@@ -22,6 +24,7 @@ export function ImageUploader({
   const [error, setError] = React.useState<string | null>(null);
   const [manualUrl, setManualUrl] = React.useState('');
   const [showUrlInput, setShowUrlInput] = React.useState(false);
+  const [isPickerOpen, setIsPickerOpen] = React.useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,7 +55,9 @@ export function ImageUploader({
         console.warn('Storage upload fallback:', uploadError.message);
         const reader = new FileReader();
         reader.onload = () => {
-          onChange(reader.result as string);
+          const res = reader.result as string;
+          onChange(res);
+          addMediaItem({ name: file.name, url: res });
           setIsUploading(false);
         };
         reader.readAsDataURL(file);
@@ -64,6 +69,7 @@ export function ImageUploader({
         .getPublicUrl(filePath);
 
       onChange(publicUrl);
+      addMediaItem({ name: file.name, url: publicUrl });
     } catch (err: any) {
       setError(err.message || 'Upload failed. You can paste an image URL directly.');
     } finally {
@@ -74,23 +80,41 @@ export function ImageUploader({
   const handleManualUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (manualUrl.trim()) {
-      onChange(manualUrl.trim());
+      const url = manualUrl.trim();
+      onChange(url);
+      addMediaItem({ name: 'External Asset', url });
       setManualUrl('');
       setShowUrlInput(false);
     }
   };
 
+  const handlePickFromLibrary = (url: string) => {
+    onChange(url);
+    addMediaItem({ name: 'Library Asset', url });
+  };
+
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <label className="text-xs font-semibold text-foreground">{label}</label>
-        <button
-          type="button"
-          onClick={() => setShowUrlInput(!showUrlInput)}
-          className="text-[11px] text-primary dark:text-sky-400 hover:underline"
-        >
-          {showUrlInput ? 'Upload file instead' : 'Enter URL manually'}
-        </button>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        {label && <label className="text-xs font-semibold text-foreground">{label}</label>}
+        <div className="flex items-center gap-3 ml-auto">
+          <button
+            type="button"
+            onClick={() => setIsPickerOpen(true)}
+            className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+          >
+            <FileImage className="w-3.5 h-3.5" />
+            <span>Choose from Library</span>
+          </button>
+          <span className="text-muted-foreground/40 text-[10px]">•</span>
+          <button
+            type="button"
+            onClick={() => setShowUrlInput(!showUrlInput)}
+            className="text-[11px] text-muted-foreground hover:text-foreground hover:underline"
+          >
+            {showUrlInput ? 'Upload file' : 'Enter URL'}
+          </button>
+        </div>
       </div>
 
       {showUrlInput ? (
@@ -113,32 +137,52 @@ export function ImageUploader({
       ) : value ? (
         <div className="relative w-full h-44 rounded-xl overflow-hidden border border-border bg-muted/40 group">
           <Image src={value} alt="Preview" fill className="object-cover" />
-          <button
-            type="button"
-            onClick={() => onChange('')}
-            className="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 text-white hover:bg-red-600 transition-colors"
-            title="Remove image"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsPickerOpen(true)}
+              className="px-3 py-1.5 rounded-lg bg-white/90 text-black text-xs font-semibold hover:bg-white transition-colors"
+            >
+              Change
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange('')}
+              className="p-1.5 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+              title="Remove image"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       ) : (
-        <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-muted/30 transition-colors relative">
-          <div className="flex flex-col items-center justify-center p-4 text-center">
-            <UploadCloud className="w-8 h-8 text-muted-foreground mb-2" />
-            <p className="text-xs font-semibold text-foreground">
-              {isUploading ? 'Uploading to storage...' : 'Click or drag image to upload'}
-            </p>
-            <p className="text-[11px] text-muted-foreground mt-1">{helperText}</p>
-          </div>
-          <input
-            type="file"
-            accept="image/png, image/jpeg, image/webp, image/svg+xml"
-            onChange={handleFileUpload}
-            disabled={isUploading}
-            className="hidden"
-          />
-        </label>
+        <div className="flex flex-col gap-2">
+          <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-muted/30 transition-colors relative">
+            <div className="flex flex-col items-center justify-center p-4 text-center">
+              <UploadCloud className="w-8 h-8 text-muted-foreground mb-2" />
+              <p className="text-xs font-semibold text-foreground">
+                {isUploading ? 'Uploading to storage...' : 'Click or drag image to upload'}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-1">{helperText}</p>
+            </div>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/webp, image/svg+xml"
+              onChange={handleFileUpload}
+              disabled={isUploading}
+              className="hidden"
+            />
+          </label>
+
+          <button
+            type="button"
+            onClick={() => setIsPickerOpen(true)}
+            className="w-full py-2.5 px-3 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:bg-muted/60 transition-colors flex items-center justify-center gap-2"
+          >
+            <FileImage className="w-4 h-4 text-primary" />
+            <span>Select from Media Library</span>
+          </button>
+        </div>
       )}
 
       {error && (
@@ -147,6 +191,13 @@ export function ImageUploader({
           <span>{error}</span>
         </div>
       )}
+
+      <MediaPickerModal
+        isOpen={isPickerOpen}
+        onClose={() => setIsPickerOpen(false)}
+        onSelect={handlePickFromLibrary}
+        currentValue={value}
+      />
     </div>
   );
 }
