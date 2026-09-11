@@ -257,6 +257,11 @@ export async function POST(request: NextRequest) {
                     ...(s.exit_popup_whatsapp_label ? { exit_popup_whatsapp_label: s.exit_popup_whatsapp_label } : {}),
                     ...(s.exit_popup_whatsapp_tag ? { exit_popup_whatsapp_tag: s.exit_popup_whatsapp_tag } : {}),
                     ...(s.exit_popup_submit_label ? { exit_popup_submit_label: s.exit_popup_submit_label } : {}),
+                    ...(s.exit_popup_trigger_exit_intent !== undefined ? { exit_popup_trigger_exit_intent: s.exit_popup_trigger_exit_intent } : {}),
+                    ...(s.exit_popup_trigger_scroll_enabled !== undefined ? { exit_popup_trigger_scroll_enabled: s.exit_popup_trigger_scroll_enabled } : {}),
+                    ...(s.exit_popup_scroll_px !== undefined ? { exit_popup_scroll_px: s.exit_popup_scroll_px } : {}),
+                    ...(s.exit_popup_trigger_delay_enabled !== undefined ? { exit_popup_trigger_delay_enabled: s.exit_popup_trigger_delay_enabled } : {}),
+                    ...(s.exit_popup_delay_sec !== undefined ? { exit_popup_delay_sec: s.exit_popup_delay_sec } : {}),
                   },
                   updated_at: new Date().toISOString(),
                 }, { onConflict: 'key' });

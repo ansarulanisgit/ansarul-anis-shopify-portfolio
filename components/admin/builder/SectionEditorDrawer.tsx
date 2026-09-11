@@ -1266,11 +1266,12 @@ export function SectionEditorDrawer({
                   {/* EXIT POPUP SPECIFIC */}
                   {section.section_type === 'exit_popup' && (
                     <>
+                      {/* Content Fields Card */}
                       <div className="p-4 rounded-xl border border-border bg-card space-y-4">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-foreground text-sm flex items-center gap-1.5">
                             <Sparkles className="w-4 h-4 text-primary" />
-                            <span>Exit Intent Visitor Popup</span>
+                            <span>Exit Intent Visitor Popup Content</span>
                           </span>
                           <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground cursor-pointer">
                             <span>Enable Popup</span>
@@ -1288,7 +1289,7 @@ export function SectionEditorDrawer({
                             <div className="space-y-1.5">
                               <label className="text-xs text-muted-foreground font-semibold">Badge Hook Text (Eyebrow)</label>
                               <Input
-                                value={settings.exit_popup_eyebrow || 'WAIT! BEFORE YOU GO'}
+                                value={settings.exit_popup_eyebrow ?? settings.eyebrow ?? 'WAIT! BEFORE YOU GO'}
                                 onChange={(e) => updateSetting('exit_popup_eyebrow', e.target.value)}
                                 placeholder="WAIT! BEFORE YOU GO"
                               />
@@ -1297,7 +1298,7 @@ export function SectionEditorDrawer({
                             <div className="space-y-1.5">
                               <label className="text-xs text-muted-foreground font-semibold">Popup Headline</label>
                               <Input
-                                value={settings.exit_popup_title || "Let's Build Your Dream Shopify Store"}
+                                value={settings.exit_popup_title ?? settings.heading ?? (settings as any).title ?? "Let's Build Your Dream Shopify Store"}
                                 onChange={(e) => updateSetting('exit_popup_title', e.target.value)}
                                 placeholder="Let's Build Your Dream Shopify Store"
                               />
@@ -1306,7 +1307,11 @@ export function SectionEditorDrawer({
                             <div className="space-y-1.5">
                               <label className="text-xs text-muted-foreground font-semibold">Popup Subheading</label>
                               <Textarea
-                                value={settings.exit_popup_subheading || 'Get a Free 15-Minute Shopify Audit & Fixed Quote for your project. Reach out on WhatsApp or drop a quick line below!'}
+                                value={
+                                  settings.exit_popup_subheading ??
+                                  settings.subheading ??
+                                  'Get a Free 15-Minute Shopify Audit & Fixed Quote for your project. Reach out on WhatsApp or drop a quick line below!'
+                                }
                                 onChange={(e) => updateSetting('exit_popup_subheading', e.target.value)}
                                 placeholder="Get a Free 15-Minute Shopify Audit..."
                                 className="min-h-[70px]"
@@ -1317,7 +1322,7 @@ export function SectionEditorDrawer({
                               <div className="space-y-1.5">
                                 <label className="text-xs text-muted-foreground font-semibold">WhatsApp Button Text</label>
                                 <Input
-                                  value={settings.exit_popup_whatsapp_label || 'Chat on WhatsApp'}
+                                  value={settings.exit_popup_whatsapp_label ?? (settings as any).whatsapp_label ?? 'Chat on WhatsApp'}
                                   onChange={(e) => updateSetting('exit_popup_whatsapp_label', e.target.value)}
                                   placeholder="Chat on WhatsApp"
                                 />
@@ -1325,7 +1330,7 @@ export function SectionEditorDrawer({
                               <div className="space-y-1.5">
                                 <label className="text-xs text-muted-foreground font-semibold">WhatsApp Reply Tag</label>
                                 <Input
-                                  value={settings.exit_popup_whatsapp_tag || ''}
+                                  value={settings.exit_popup_whatsapp_tag ?? (settings as any).whatsapp_tag ?? ''}
                                   onChange={(e) => updateSetting('exit_popup_whatsapp_tag', e.target.value)}
                                   placeholder="Optional tag (e.g. Under 20m reply)"
                                 />
@@ -1335,7 +1340,7 @@ export function SectionEditorDrawer({
                             <div className="space-y-1.5">
                               <label className="text-xs text-muted-foreground font-semibold">Submit Button Text</label>
                               <Input
-                                value={settings.exit_popup_submit_label || 'Get Free Audit & Quote'}
+                                value={settings.exit_popup_submit_label ?? (settings as any).submit_label ?? 'Get Free Audit & Quote'}
                                 onChange={(e) => updateSetting('exit_popup_submit_label', e.target.value)}
                                 placeholder="Get Free Audit & Quote"
                               />
@@ -1343,6 +1348,95 @@ export function SectionEditorDrawer({
                           </div>
                         )}
                       </div>
+
+                      {/* Display Triggers & Conditions Card */}
+                      {settings.exit_popup_enabled !== false && (
+                        <div className="p-4 rounded-xl border border-border bg-card space-y-3">
+                          <span className="font-bold text-foreground text-xs uppercase tracking-wider block">
+                            Display Triggers & Conditions
+                          </span>
+
+                          <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
+                            <span>1. Exit Intent (Mouseleave Top / Mobile Back-Scroll)</span>
+                            <input
+                              type="checkbox"
+                              checked={settings.exit_popup_trigger_exit_intent !== false}
+                              onChange={(e) => updateSetting('exit_popup_trigger_exit_intent', e.target.checked)}
+                              className="w-4 h-4 rounded text-primary"
+                            />
+                          </label>
+
+                          <div className="space-y-2 pt-1 border-t border-border/40">
+                            <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
+                              <span>2. Scroll Depth Trigger</span>
+                              <input
+                                type="checkbox"
+                                checked={settings.exit_popup_trigger_scroll_enabled !== false}
+                                onChange={(e) => updateSetting('exit_popup_trigger_scroll_enabled', e.target.checked)}
+                                className="w-4 h-4 rounded text-primary"
+                              />
+                            </label>
+                            {settings.exit_popup_trigger_scroll_enabled !== false && (
+                              <div className="flex items-center gap-2 pl-4">
+                                <span className="text-xs text-muted-foreground">Trigger after scrolling:</span>
+                                <Input
+                                  type="number"
+                                  value={settings.exit_popup_scroll_px ?? 600}
+                                  onChange={(e) => updateSetting('exit_popup_scroll_px', parseInt(e.target.value) || 0)}
+                                  className="w-24 h-8 text-xs"
+                                  placeholder="600"
+                                />
+                                <span className="text-xs text-muted-foreground">px</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="space-y-2 pt-1 border-t border-border/40">
+                            <label className="flex items-center justify-between text-xs font-semibold text-foreground cursor-pointer">
+                              <span>3. Time Delay Trigger</span>
+                              <input
+                                type="checkbox"
+                                checked={Boolean(settings.exit_popup_trigger_delay_enabled)}
+                                onChange={(e) => updateSetting('exit_popup_trigger_delay_enabled', e.target.checked)}
+                                className="w-4 h-4 rounded text-primary"
+                              />
+                            </label>
+                            {Boolean(settings.exit_popup_trigger_delay_enabled) && (
+                              <div className="flex items-center gap-2 pl-4">
+                                <span className="text-xs text-muted-foreground">Trigger after staying:</span>
+                                <Input
+                                  type="number"
+                                  value={settings.exit_popup_delay_sec ?? 30}
+                                  onChange={(e) => updateSetting('exit_popup_delay_sec', parseInt(e.target.value) || 0)}
+                                  className="w-24 h-8 text-xs"
+                                  placeholder="30"
+                                />
+                                <span className="text-xs text-muted-foreground">seconds</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Live Preview Button */}
+                          <div className="pt-2">
+                            <button
+                              type="button"
+                              onClick={() => updateSetting('exit_popup_preview_open', !settings.exit_popup_preview_open)}
+                              className={`w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-xs transition-colors ${
+                                settings.exit_popup_preview_open
+                                  ? 'bg-amber-500 text-amber-950 hover:bg-amber-600'
+                                  : 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20'
+                              }`}
+                            >
+                              <Eye className="w-4 h-4" />
+                              <span>
+                                {settings.exit_popup_preview_open
+                                  ? 'Hide Real-Time Preview Popup'
+                                  : 'Preview Exit Popup Modal Live'}
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
 

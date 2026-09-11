@@ -343,6 +343,11 @@ export const SECTION_DEFINITIONS: Record<SectionType, SectionDefinition> = {
       exit_popup_whatsapp_label: 'Chat on WhatsApp',
       exit_popup_whatsapp_tag: '',
       exit_popup_submit_label: 'Get Free Audit & Quote',
+      exit_popup_trigger_exit_intent: true,
+      exit_popup_trigger_scroll_enabled: true,
+      exit_popup_scroll_px: 600,
+      exit_popup_trigger_delay_enabled: false,
+      exit_popup_delay_sec: 30,
     },
   },
   cta: {

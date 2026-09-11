@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { SiteSettingsMap } from '@/types/database.types';
 
 interface ExitIntentModalProps {
-  settings?: Partial<SiteSettingsMap>;
+  settings?: Record<string, any>;
   whatsappNumber?: string;
   whatsappMessage?: string;
 }
@@ -26,22 +26,36 @@ export function ExitIntentModal({
   const [error, setError] = React.useState<string | null>(null);
 
   const isEnabled = settings.exit_popup_enabled !== false;
-  const eyebrow = settings.exit_popup_eyebrow || 'WAIT! BEFORE YOU GO';
-  const title = settings.exit_popup_title || "Let's Build Your Dream Shopify Store";
+  const eyebrow = settings.exit_popup_eyebrow ?? settings.eyebrow ?? 'WAIT! BEFORE YOU GO';
+  const title = settings.exit_popup_title ?? settings.heading ?? settings.title ?? "Let's Build Your Dream Shopify Store";
   const subheading =
-    settings.exit_popup_subheading ||
+    settings.exit_popup_subheading ??
+    settings.subheading ??
     'Get a Free 15-Minute Shopify Audit & Fixed Quote for your project. Reach out on WhatsApp or drop a quick line below!';
-  const whatsappLabel = settings.exit_popup_whatsapp_label || 'Chat on WhatsApp';
-  const whatsappTag = settings.exit_popup_whatsapp_tag || 'Under 20m reply';
-  const submitLabel = settings.exit_popup_submit_label || 'Get Free Audit & Quote';
+  const whatsappLabel = settings.exit_popup_whatsapp_label ?? settings.whatsapp_label ?? 'Chat on WhatsApp';
+  const whatsappTag = settings.exit_popup_whatsapp_tag ?? settings.whatsapp_tag ?? '';
+  const submitLabel = settings.exit_popup_submit_label ?? settings.submit_label ?? 'Get Free Audit & Quote';
   const num = settings.whatsapp_number || whatsappNumber;
   const msg = settings.whatsapp_message || whatsappMessage;
+
+  const triggerExitIntent = settings.exit_popup_trigger_exit_intent !== false;
+  const triggerScrollEnabled = settings.exit_popup_trigger_scroll_enabled !== false;
+  const scrollPx = Number(settings.exit_popup_scroll_px ?? 600);
+  const triggerDelayEnabled = Boolean(settings.exit_popup_trigger_delay_enabled);
+  const delaySec = Number(settings.exit_popup_delay_sec ?? 30);
+  const isPreviewOpen = Boolean(settings.exit_popup_preview_open);
 
   const cleanNumber = num.replace(/[^0-9]/g, '');
   const encodedText = encodeURIComponent(msg);
   const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodedText}`;
 
   React.useEffect(() => {
+    // If builder preview mode is toggled, force modal open state
+    if (isPreviewOpen) {
+      setIsOpen(true);
+      return;
+    }
+
     if (typeof window === 'undefined' || !isEnabled) return;
 
     const hasContacted = sessionStorage.getItem('anisshopify_user_contacted') === 'true';
@@ -51,34 +65,67 @@ export function ExitIntentModal({
 
     let hasTriggered = false;
 
-    const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 15 && !hasTriggered) {
+    const triggerModal = () => {
+      if (!hasTriggered) {
         hasTriggered = true;
         setIsOpen(true);
       }
     };
 
+    // 1. Exit Intent (Mouseleave Top)
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (triggerExitIntent && e.clientY <= 15) {
+        triggerModal();
+      }
+    };
+
+    // 2. Scroll Depth (scroll_px threshold or mobile back-scroll fallback)
     let lastScrollY = window.scrollY;
     const handleScroll = () => {
       const currentScroll = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight > 0 && currentScroll / docHeight > 0.45) {
-        if (lastScrollY - currentScroll > 150 && !hasTriggered) {
-          hasTriggered = true;
-          setIsOpen(true);
+
+      if (triggerScrollEnabled && scrollPx > 0 && currentScroll >= scrollPx) {
+        triggerModal();
+      } else if (triggerExitIntent) {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (docHeight > 0 && currentScroll / docHeight > 0.45 && lastScrollY - currentScroll > 150) {
+          triggerModal();
         }
       }
       lastScrollY = currentScroll;
     };
 
-    document.addEventListener('mouseleave', handleMouseLeave);
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // 3. Time Delay Timer (delay_sec)
+    let delayTimer: NodeJS.Timeout | null = null;
+    if (triggerDelayEnabled && delaySec > 0) {
+      delayTimer = setTimeout(() => {
+        triggerModal();
+      }, delaySec * 1000);
+    }
+
+    if (triggerExitIntent) {
+      document.addEventListener('mouseleave', handleMouseLeave);
+    }
+    if (triggerExitIntent || (triggerScrollEnabled && scrollPx > 0)) {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
 
     return () => {
-      document.removeEventListener('mouseleave', handleMouseLeave);
+      if (triggerExitIntent) {
+        document.removeEventListener('mouseleave', handleMouseLeave);
+      }
       window.removeEventListener('scroll', handleScroll);
+      if (delayTimer) clearTimeout(delayTimer);
     };
-  }, [isEnabled]);
+  }, [
+    isEnabled,
+    triggerExitIntent,
+    triggerScrollEnabled,
+    scrollPx,
+    triggerDelayEnabled,
+    delaySec,
+    isPreviewOpen,
+  ]);
 
   const handleClose = () => {
     setIsOpen(false);
