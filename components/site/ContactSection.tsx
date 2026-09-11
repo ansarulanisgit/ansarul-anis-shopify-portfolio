@@ -116,7 +116,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-stretch">
           {/* Direct WhatsApp & Guarantee Sidebar */}
           <div className="lg:col-span-5 flex flex-col space-y-6">
             <div className="p-8 rounded-2xl bg-card border border-border/80 shadow-sm flex flex-col justify-between">
@@ -194,15 +194,15 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
           </div>
 
           {/* Form Column */}
-          <div className="lg:col-span-7">
-            <div className="relative p-8 sm:p-10 rounded-[14px] bg-card border border-border/80 shadow-xl overflow-hidden">
+          <div className="lg:col-span-7 flex flex-col">
+            <div className="relative p-8 sm:p-10 rounded-[14px] bg-card border border-border/80 shadow-xl overflow-hidden h-full flex flex-col justify-between">
               {/* Top decorative gradient bar */}
               <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
               {isSubmitted ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="py-12 flex flex-col items-center text-center space-y-4"
+                  className="py-12 flex flex-col items-center text-center space-y-4 my-auto"
                 >
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
                     <CheckCircle2 className="w-8 h-8" />
@@ -219,7 +219,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                   </button>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex-1 flex flex-col justify-between">
                   {/* Honeypot anti-spam field */}
                   <div className="hidden" aria-hidden="true">
                     <input type="text" tabIndex={-1} autoComplete="off" {...register('honeypot')} />
@@ -234,7 +234,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {/* Name */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-foreground">Your Name *</label>
+                      <label className="text-sm font-bold text-foreground">Your Name *</label>
                       <Input placeholder="Sarah Jenkins" {...register('name')} />
                       {errors.name && (
                         <p className="text-xs text-destructive">{errors.name.message}</p>
@@ -243,7 +243,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
 
                     {/* Email */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-foreground">Your Email *</label>
+                      <label className="text-sm font-bold text-foreground">Your Email *</label>
                       <Input type="email" placeholder="sarah@brand.com" {...register('email')} />
                       {errors.email && (
                         <p className="text-xs text-destructive">{errors.email.message}</p>
@@ -254,7 +254,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {/* Project Type */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-foreground">Project Type</label>
+                      <label className="text-sm font-bold text-foreground">Project Type</label>
                       <Select {...register('project_type')}>
                         <option value="">Select one..</option>
                         <option value="Shopify Store Design & Development">Shopify Store Design & Development</option>
@@ -278,7 +278,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
 
                     {/* Budget Range */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-foreground">Estimated Budget</label>
+                      <label className="text-sm font-bold text-foreground">Estimated Budget</label>
                       <Select {...register('budget_range')}>
                         <option value="">Select one..</option>
                         <option value="$50-$200">$50 - $200 (Minor Customization & App Setup)</option>
@@ -298,7 +298,7 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
 
                   {/* Subject */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-foreground">Subject *</label>
+                    <label className="text-sm font-bold text-foreground">Subject *</label>
                     <Input placeholder="Shopify Store Redesign / New Project Inquiry" {...register('subject')} />
                     {errors.subject && (
                       <p className="text-xs text-destructive">{errors.subject.message}</p>
@@ -306,10 +306,11 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                   </div>
 
                   {/* Message */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-foreground">Your message *</label>
+                  <div className="space-y-1.5 flex-1 flex flex-col">
+                    <label className="text-sm font-bold text-foreground">Your message *</label>
                     <Textarea
                       placeholder="Tell me about your project, requirements, timeline, or any questions..."
+                      className="flex-1 min-h-[160px] lg:min-h-[220px]"
                       {...register('message')}
                     />
                     {errors.message && (
