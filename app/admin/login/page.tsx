@@ -142,7 +142,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-xl bg-accent-800 text-white hover:bg-accent-700 dark:bg-primary dark:text-primary-foreground font-semibold text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-50 mt-2"
+            className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-sm shadow-md shadow-primary/25 transition-all active:scale-[0.99] disabled:opacity-50 mt-2"
           >
             {isLoading ? (
               <span>Verifying credentials...</span>
