@@ -164,6 +164,31 @@ export async function POST(request: NextRequest) {
               }
             }
 
+            // Sync about section to site_settings
+            if (sec.section_key === 'home_about' || sec.section_type === 'about') {
+              try {
+                const s = sec.settings || {};
+                const { data: existingAboutSetting } = await supabase.from('site_settings').select('value').eq('key', 'about').maybeSingle();
+                const existingVal = existingAboutSetting?.value || {};
+                const updatedAboutVal = {
+                  ...existingVal,
+                  ...(s.eyebrow ? { about_eyebrow: s.eyebrow } : {}),
+                  ...(s.heading ? { about_heading: s.heading } : {}),
+                  ...(s.description ? { about_text: Array.isArray(s.description) ? s.description : s.description.split('\n\n') } : {}),
+                  ...(s.availability_line ? { availability_line: s.availability_line } : {}),
+                  ...(s.tools ? { about_tools: s.tools } : {}),
+                  ...(s.image_url ? { about_photo_url: s.image_url } : {}),
+                };
+                await (supabase.from('site_settings') as any).upsert({
+                  key: 'about',
+                  value: updatedAboutVal,
+                  updated_at: new Date().toISOString(),
+                }, { onConflict: 'key' });
+              } catch (aboutSyncErr) {
+                console.error('Error syncing about section to site_settings:', aboutSyncErr);
+              }
+            }
+
             // If trust bar section is published, sync to site_settings
             if ((sec.section_key === 'home_trust_bar' || sec.section_type === 'trust_bar') && sec.settings?.blocks) {
               try {
@@ -178,6 +203,26 @@ export async function POST(request: NextRequest) {
                 }, { onConflict: 'key' });
               } catch (tbSyncErr) {
                 console.error('Error syncing trust bar to site_settings:', tbSyncErr);
+              }
+            }
+
+            // Sync navigation section to site_settings general
+            if (sec.section_type === 'navigation') {
+              try {
+                const s = sec.settings || {};
+                const { data: existingGen } = await supabase.from('site_settings').select('value').eq('key', 'general').maybeSingle();
+                const existingVal = existingGen?.value || {};
+                await (supabase.from('site_settings') as any).upsert({
+                  key: 'general',
+                  value: {
+                    ...existingVal,
+                    ...(s.cta_label ? { nav_cta_label: s.cta_label } : {}),
+                    ...(s.nav_links ? { nav_links: s.nav_links } : {}),
+                  },
+                  updated_at: new Date().toISOString(),
+                }, { onConflict: 'key' });
+              } catch (navSyncErr) {
+                console.error('Error syncing navigation section:', navSyncErr);
               }
             }
           }

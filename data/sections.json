@@ -48,14 +48,14 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.232672+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.379Z"
   },
   {
     "id": "e81dffd3-5314-492e-9572-6aa696657b1c",
     "page_key": "home",
     "section_key": "home_hero",
     "section_type": "hero",
-    "title": "Hero Banner",
+    "title": "Hero Section Test",
     "order_index": 1,
     "is_enabled": true,
     "is_visible": true,
@@ -64,46 +64,17 @@
     "mobile_visible": true,
     "status": "published",
     "settings": {
-      "layout": "two-column",
-      "eyebrow": "Shopify Developer & Landing Page Specialist",
-      "heading": "Shopify Website Design That",
-      "alignment": "left",
-      "animation": "fade-up",
-      "image_alt": "Ansarul Anis - Shopify Developer",
-      "image_url": "/images/ansarul-anis.png",
-      "background": "default",
-      "subheading": "Hey, I'm Ansarul Anis. A passionate young Shopify developer engineering custom high-converting stores, direct-response landing pages, and lightning-fast themes built to turn traffic into revenue.",
-      "spacing_top": "normal",
-      "heading_prefix": "Shopify Website Design That",
-      "image_position": "right",
-      "rotating_words": [
-        "Drives Growth",
-        "Boosts Sales",
-        "Elevates Brands",
-        "Generates Results"
-      ],
-      "spacing_bottom": "normal",
-      "animation_speed": "normal",
-      "badge_top_title": "Top Rated",
-      "primary_cta_url": "#work",
-      "hero_trust_chips": [
-        "Shopify 2.0",
-        "Liquid",
-        "Performance and SEO",
-        "Apps & Integrations",
-        "CRO and Analytics",
-        "AI Integration"
-      ],
-      "primary_cta_label": "View My Works",
-      "secondary_cta_url": "#contact",
-      "badge_bottom_title": "270+ Stores",
-      "badge_top_subtitle": "Shopify Developer",
-      "secondary_cta_label": "Contact Me",
-      "badge_bottom_subtitle": "Developed Successfully"
+      "test": 123,
+      "eyebrow": "Shopify Store & Landing Page Developer",
+      "subheading": "Hey, I’m Ansarul Anis — a Shopify Expert with 5+ years of experience designing and developing high-converting ecommerce websites. I specialize in custom Shopify website design, Shopify store development, dropshipping stores, high-performance themes, and direct-response landing pages. From building a Shopify store from scratch to redesigning and optimizing an existing one, I create fast, conversion-focused experiences that turn traffic into customers and help brands grow.",
+      "primary_cta_url": "#contact",
+      "primary_cta_label": "Contact Me",
+      "secondary_cta_url": "#work",
+      "secondary_cta_label": "View My Works"
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.443744+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.379Z"
   },
   {
     "id": "059b2a34-99e7-4ac0-929d-fbc5abb37213",
@@ -153,7 +124,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.658133+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   },
   {
     "id": "7da111de-9d2f-4066-a0d2-edf285eb01d2",
@@ -182,7 +153,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:01.87758+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   },
   {
     "id": "eec0fd20-49da-4a59-a6a2-63b197770a81",
@@ -210,7 +181,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.059479+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   },
   {
     "id": "5e94db79-8a37-420d-9175-584ee8aba24b",
@@ -239,7 +210,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.274204+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   },
   {
     "id": "2c7bf578-27d5-450f-9585-f15457f55b7a",
@@ -283,7 +254,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.463688+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   },
   {
     "id": "4044cc3e-1fe4-42d5-ba38-20af0f4abe16",
@@ -310,7 +281,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.684856+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   },
   {
     "id": "8c9bf5f1-42af-46b9-86f1-8113210fa508",
@@ -338,7 +309,7 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:02.899258+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   },
   {
     "id": "eee5cac9-d94d-48a5-b8fc-b02d31cc864c",
@@ -362,6 +333,6 @@
     },
     "draft_settings": null,
     "created_at": "2026-09-10T09:28:03.131833+00:00",
-    "updated_at": "2026-09-10T17:08:50.871Z"
+    "updated_at": "2026-09-11T02:56:50.380Z"
   }
 ]

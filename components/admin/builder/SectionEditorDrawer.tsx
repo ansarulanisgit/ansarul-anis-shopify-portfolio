@@ -1131,29 +1131,134 @@ export function SectionEditorDrawer({
                         <Textarea
                           value={settings.description || ''}
                           onChange={(e) => updateSetting('description', e.target.value)}
-                          placeholder="Brand description or mission statement..."
+                          placeholder="Ansarul Anis — Shopify expert specializing in Shopify store design..."
+                          className="min-h-[90px]"
                         />
                       </div>
 
-                      <div className="flex items-center justify-between p-3 rounded-xl bg-card border border-border">
-                        <span className="font-semibold text-xs">Display Social Media Links Bar</span>
-                        <input
-                          type="checkbox"
-                          checked={settings.show_social_icons !== false}
-                          onChange={(e) => updateSetting('show_social_icons', e.target.checked)}
-                          className="w-4 h-4 rounded text-primary"
-                        />
+                      {/* Navigation Column Controls */}
+                      <div className="space-y-2.5 pt-3 border-t border-border/60">
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-foreground">Navigation Column Title</label>
+                          <Input
+                            value={settings.nav_title || 'NAVIGATION'}
+                            onChange={(e) => updateSetting('nav_title', e.target.value)}
+                            placeholder="NAVIGATION"
+                          />
+                        </div>
+
+                        {/* Navigation Quick Links Manager */}
+                        <div className="space-y-2 pt-1">
+                          <div className="flex items-center justify-between">
+                            <label className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                              <Sparkles className="w-3.5 h-3.5 text-primary" />
+                              <span>Footer Navigation Links</span>
+                            </label>
+                            <button
+                              type="button"
+                              onClick={handleResetNavLinks}
+                              className="text-[10px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                            >
+                              <RotateCcw className="w-3 h-3" />
+                              <span>Reset Links</span>
+                            </button>
+                          </div>
+
+                          <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                            {(settings.nav_links && settings.nav_links.length > 0 ? settings.nav_links : defaultNavLinks).map((link, idx) => (
+                              <div key={idx} className="flex items-center gap-2 p-2 rounded-xl bg-card border border-border">
+                                <Input
+                                  value={link.label}
+                                  onChange={(e) => handleUpdateNavLink(idx, { label: e.target.value })}
+                                  placeholder="Link Label"
+                                  className="flex-1 text-xs h-8"
+                                />
+                                <Input
+                                  value={link.href}
+                                  onChange={(e) => handleUpdateNavLink(idx, { href: e.target.value })}
+                                  placeholder="#section or URL"
+                                  className="flex-1 text-xs h-8 font-mono"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveNavLink(idx)}
+                                  className="p-1 text-muted-foreground hover:text-destructive shrink-0"
+                                  title="Delete link"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center gap-2 pt-1">
+                            <Input
+                              value={newNavLabel}
+                              onChange={(e) => setNewNavLabel(e.target.value)}
+                              placeholder="New Link Label..."
+                              className="flex-1 text-xs h-8"
+                            />
+                            <Input
+                              value={newNavHref}
+                              onChange={(e) => setNewNavHref(e.target.value)}
+                              placeholder="#work or https://..."
+                              className="flex-1 text-xs h-8 font-mono"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleAddNavLink}
+                              disabled={!newNavLabel.trim() || !newNavHref.trim()}
+                              className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-bold text-xs hover:bg-primary/90 disabled:opacity-50 h-8 shrink-0 flex items-center justify-center"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="font-semibold text-foreground">Custom Copyright Notice (optional)</label>
-                        <Textarea
-                          value={settings.copyright_text || ''}
-                          onChange={(e) => updateSetting('copyright_text', e.target.value)}
-                          placeholder="Leave empty for automatic: © 2026 AnisShopify · Ansarul Anis. All rights reserved..."
-                          className="min-h-[60px]"
-                        />
-                        <p className="text-[11px] text-muted-foreground">If empty, automatically shows current year and site name.</p>
+                      {/* Connect Column Controls */}
+                      <div className="space-y-2.5 pt-3 border-t border-border/60">
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-foreground">Connect Column Title</label>
+                          <Input
+                            value={settings.connect_title || 'CONNECT'}
+                            onChange={(e) => updateSetting('connect_title', e.target.value)}
+                            placeholder="CONNECT"
+                          />
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-card border border-border">
+                          <span className="font-semibold text-xs">Display Social Media Links</span>
+                          <input
+                            type="checkbox"
+                            checked={settings.show_social_icons !== false}
+                            onChange={(e) => updateSetting('show_social_icons', e.target.checked)}
+                            className="w-4 h-4 rounded text-primary"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Footer Bottom Bar Controls */}
+                      <div className="space-y-2.5 pt-3 border-t border-border/60">
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-foreground">Copyright Notice Text</label>
+                          <Textarea
+                            value={settings.copyright_text || ''}
+                            onChange={(e) => updateSetting('copyright_text', e.target.value)}
+                            placeholder="© 2026 AnisShopify. All rights reserved."
+                            className="min-h-[60px]"
+                          />
+                          <p className="text-[11px] text-muted-foreground">Leave blank to automatically use current year and brand name.</p>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-foreground">Back to Top Button Text</label>
+                          <Input
+                            value={settings.back_to_top_text || 'Back to top'}
+                            onChange={(e) => updateSetting('back_to_top_text', e.target.value)}
+                            placeholder="Back to top"
+                          />
+                        </div>
                       </div>
                     </>
                   )}

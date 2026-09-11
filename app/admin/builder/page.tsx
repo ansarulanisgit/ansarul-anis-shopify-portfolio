@@ -252,10 +252,21 @@ export default function FrontEndBuilderPage() {
   React.useEffect(() => {
     async function loadSections() {
       try {
-        const res = await fetch('/api/sections?pageKey=home&includeDrafts=true');
-        const json = await res.json();
-        if (json.success && json.data && json.data.length > 0) {
-          setSections(json.data);
+        const [secRes, setRes] = await Promise.all([
+          fetch('/api/sections?pageKey=home&includeDrafts=true'),
+          fetch('/api/settings'),
+        ]);
+        const secJson = await secRes.json();
+        const setJson = await setRes.json();
+
+        if (secJson.success && secJson.data && secJson.data.length > 0) {
+          setSections(secJson.data);
+        }
+        if (setJson.success && setJson.data) {
+          setPreviewCollections((prev) => ({
+            ...prev,
+            siteSettings: { ...prev.siteSettings, ...setJson.data },
+          }));
         }
       } catch {
         // Keep initial seed

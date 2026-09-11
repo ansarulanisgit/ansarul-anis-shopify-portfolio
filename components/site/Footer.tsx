@@ -26,6 +26,23 @@ export function Footer({
     `Crafted with passion by ${developerName} — freelance Shopify store and landing page specialist engineering custom, sub-second, direct-response e-commerce experiences.`;
   const showSocial = sectionSettings?.show_social_icons !== false;
 
+  const navTitle = sectionSettings?.nav_title || sectionSettings?.eyebrow || 'Navigation';
+  const connectTitle = sectionSettings?.connect_title || 'Connect';
+  const backToTopText = sectionSettings?.back_to_top_text || 'Back to top';
+  
+  const defaultNavLinks = [
+    { label: 'Home', href: '#home' },
+    { label: 'My works', href: '#work' },
+    { label: 'Services', href: '#services' },
+    { label: 'About', href: '#about' },
+    { label: 'FAQ', href: '#faq' },
+    { label: 'Contact', href: '#contact' },
+  ];
+
+  const navLinks = sectionSettings?.nav_links && sectionSettings.nav_links.length > 0
+    ? sectionSettings.nav_links
+    : defaultNavLinks;
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -57,39 +74,28 @@ export function Footer({
               </div>
               <span>{displaySiteName}</span>
             </Link>
-            <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
+            <p className="text-base text-muted-foreground max-w-sm leading-relaxed">
               {displayDesc}
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Navigation</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a href="#home" className="hover:text-foreground transition-colors">Home</a>
-              </li>
-              <li>
-                <a href="#work" className="hover:text-foreground transition-colors">Case Studies</a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-foreground transition-colors">Services</a>
-              </li>
-              <li>
-                <a href="#about" className="hover:text-foreground transition-colors">About</a>
-              </li>
-              <li>
-                <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
-              </li>
-              <li>
-                <a href="#contact" className="hover:text-foreground transition-colors">Contact</a>
-              </li>
+            <h4 className="text-[18px] font-bold uppercase tracking-wider text-foreground">{navTitle}</h4>
+            <ul className="space-y-2 text-base text-muted-foreground font-medium">
+              {navLinks.map((link, i) => (
+                <li key={i}>
+                  <a href={link.href} className="hover:text-foreground transition-colors">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Connect & Social */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Connect</h4>
+            <h4 className="text-[18px] font-bold uppercase tracking-wider text-foreground">{connectTitle}</h4>
             {showSocial && (
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((item, idx) => (
@@ -110,7 +116,7 @@ export function Footer({
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+        <div className="pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-base text-muted-foreground font-medium">
           <div>
             {sectionSettings?.copyright_text ? (
               sectionSettings.copyright_text
@@ -123,8 +129,8 @@ export function Footer({
             onClick={scrollToTop}
             className="flex items-center gap-1.5 hover:text-foreground transition-colors"
           >
-            <span>Back to top</span>
-            <ArrowUp className="w-3.5 h-3.5" />
+            <span>{backToTopText}</span>
+            <ArrowUp className="w-4 h-4" />
           </button>
         </div>
       </div>

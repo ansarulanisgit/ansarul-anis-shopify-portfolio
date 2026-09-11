@@ -69,6 +69,9 @@ export interface SectionSettings {
   badge_bottom_title?: string;
   badge_bottom_subtitle?: string;
   copyright_text?: string;
+  nav_title?: string;
+  connect_title?: string;
+  back_to_top_text?: string;
   nav_links?: Array<{ label: string; href: string }>;
   show_filters?: boolean;
   quote_icon?: string;
