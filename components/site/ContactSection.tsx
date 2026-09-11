@@ -253,9 +253,12 @@ export function ContactSection({ settings = {}, sectionSettings }: ContactSectio
                       <label className="text-xs font-semibold text-foreground">Estimated Budget</label>
                       <Select {...register('budget_range')}>
                         <option value="">Select one..</option>
-                        <option value="<$500">&lt; $500 (Small tweaks)</option>
-                        <option value="$500-$2000">$500 - $2,000 (Landing page)</option>
-                        <option value="$2000-$5000">$2,000 - $5,000 (Custom theme build)</option>
+                        <option value="$100-$300">$100 - $300 (Small Bug Fixes & Tweaks)</option>
+                        <option value="$300-$500">$300 - $500 (Minor Customization & Apps)</option>
+                        <option value="$500-$1000">$500 - $1,000 (Speed & CRO Optimization)</option>
+                        <option value="$1000-$2000">$1,000 - $2,000 (Landing Page Build)</option>
+                        <option value="$2000-$3500">$2,000 - $3,500 (Full Store Redesign)</option>
+                        <option value="$3500-$5000">$3,500 - $5,000 (Custom Theme Build)</option>
                         <option value="$5000+">$5,000+ (Headless / Enterprise Plus)</option>
                       </Select>
                       {errors.budget_range && (
